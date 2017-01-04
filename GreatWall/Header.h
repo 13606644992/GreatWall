@@ -5,7 +5,7 @@
 //保险课堂
 #import "SchoolViewController.h"
 //我
-#import "MineViewController.h"
+#import "UserViewController.h"
 
 
 #pragma mark ----TheThird---------------
@@ -43,6 +43,11 @@
 
 
 #pragma mark ----Anything---------------
+//状态栏白色
+#define StatusBarWhite           [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES]
+
+//状态栏黑色
+#define StatusBarBlack           [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES]
 
 //RGB色彩
 #define UIColorRGBA(r, g, b, a) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:(a)]
@@ -54,7 +59,7 @@
 #define HEIGHT       [[UIScreen mainScreen] bounds].size.height/667
 
 #define WEIGHT       [[UIScreen mainScreen] bounds].size.width/375
-
+#define WIDTH [UIScreen mainScreen].bounds.size.width / 375
 
 //加载等待
 #define SVProgressWait       [SVProgressHUD showWithStatus:@"加载中，请稍后。。。"]
@@ -68,6 +73,9 @@
 #define SVProgress(AnyThing)      [SVProgressHUD showSuccessWithStatus:AnyThing];
 
 #define PlaceImage           [UIImage imageNamed:@"01.jpg"]
+
+
+
 
 
 

@@ -11,9 +11,8 @@
 #import "HomeViewController.h"
 #import "MallViewController.h"
 #import "MallTabBarViewController.h"
-
+#import "UserViewController.h"
 #import "SchoolViewController.h"
-#import "MineViewController.h"
 #import "SquareController.h"
 
 @interface AppDelegate ()
@@ -39,7 +38,7 @@
     MallTabBarViewController *mallVC = [[MallTabBarViewController alloc]init];
     SquareController *squareVC = [[SquareController alloc]init];
     SchoolViewController *schoolVC = [[SchoolViewController alloc]init];
-    MineViewController *mineVC = [[MineViewController alloc]init];
+    UserViewController *mineVC = [[UserViewController alloc]init];
     UINavigationController *homeNaVC = [[UINavigationController alloc] initWithRootViewController:homeVC];
     homeNaVC.tabBarItem.title = @"首页";
     homeNaVC.tabBarItem.image = [UIImage imageNamed:@"ico@3x"];

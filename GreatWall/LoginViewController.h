@@ -8,6 +8,6 @@
 
 #import "RootViewController.h"
 
-@interface MineViewController : RootViewController
+@interface LoginViewController : RootViewController
 
 @end

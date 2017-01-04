@@ -50,19 +50,23 @@
     [self setViewHeader];
 
 }
+
+
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
-    //状态栏颜色
-    if (self.tabView.contentOffset.y>=64) {
-        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
-    }else{
-        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
-    }
+   
     self.navigationController.navigationBarHidden= NO;
     self.navigationItem.titleView.alpha = 0.8;
     self.searchBtn.alpha = 0.8;
-
+     //状态栏颜色
+    if (self.tabView.contentOffset.y>=64) {
+        StatusBarBlack;
+        self.searchBtn.backgroundColor = LYColor_A6;
+    }else{
+        StatusBarWhite;
+        self.searchBtn.backgroundColor = [UIColor whiteColor];
+    }
 }
 //导航头
 -(void)setViewHeader
@@ -122,10 +126,10 @@
         self.whiteView.alpha = source;
         if (scrollView.contentOffset.y>=64) {
             self.searchBtn.backgroundColor = LYColor_A6;
-             [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+            StatusBarBlack;
         }else{
             self.searchBtn.backgroundColor = [UIColor whiteColor];
-             [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
+            StatusBarWhite;
         }
     }
 }

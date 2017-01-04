@@ -147,6 +147,10 @@
 {
     UIView *HeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWindowWidth, 40*HEIGHT)];
     HeaderView.backgroundColor = [UIColor whiteColor];
+    
+    
+    
+    
     [HeaderView addSubview:self.HistoryLabel];
     [self.HistoryLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(HeaderView).with.offset(20*HEIGHT);
@@ -219,10 +223,8 @@
     if (!_tabView) {
         _tabView = [[UITableView alloc] initWithFrame:CGRectMake(0, 100+100*HEIGHT, ScreenWindowWidth, ScreenWindowHeight-100-100*HEIGHT) style:UITableViewStylePlain];
         _tabView.delegate = self;
-//        _tabView.backgroundColor = [UIColor greenColor];
         _tabView.dataSource = self;
         _tabView.rowHeight = 40*HEIGHT;
-//        _tabView.backgroundColor = [UIColor whiteColor];
     }
     return _tabView;
 }

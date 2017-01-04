@@ -32,6 +32,7 @@ static NSString *cellID = @"MMCell";
     self.title=@"商城";
 
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17],NSForegroundColorAttributeName:[LYColor colorWithHexString:@"#2dce8f"]}];
+    
     self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
     UIView * msgView= [[UIView alloc] initWithFrame:CGRectMake(0 ,0 ,17 ,17)];
     UIButton *searchBtn = [UIButton buttonWithType:UIButtonTypeCustom];
