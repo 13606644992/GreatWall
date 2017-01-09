@@ -24,6 +24,12 @@
     // Do any additional setup after loading the view.
     [self.view addSubview:self.tabView];
 }
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
+//    self.navigationController.navigationBarHidden = YES;
+
+}
 #pragma mark ----------TableViewDelegate---------
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -35,6 +41,11 @@
     CarMallCell *cell = [CarMallCell MallcellWithTableView:tableView];
     cell.model = mode;
     return cell;
+}
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    //发送消息
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"DescriptionVC" object:nil userInfo:@{@"1":@"DescriptionVC"}]];
 }
 #pragma mark -----------Controller----------
 -(UITableView *)tabView
@@ -49,6 +60,10 @@
         _tabView.showsVerticalScrollIndicator = NO;
     }
     return _tabView;
+}
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

@@ -12,11 +12,13 @@
 #import "UIImageView+WebCache.h"
 #import "UIButton+WebCache.h"
 #import <SVProgressHUD/SVProgressHUD.h>
-#import <Masonry.h>
-#import <MJRefresh.h>
+#import "Masonry.h"
+#import "MJRefresh.h"
 
 #pragma mark ----Controller---------------
 #import <AVFoundation/AVFoundation.h>
+
+#import "DataGreatWall.h"
 
 #import "AppDelegate.h"
 #import "MallTabBarViewController.h"
@@ -36,6 +38,7 @@
 #import "LYBackButton.h"
 #import "LYTitleLable.h"
 
+#import "DescriptionController.h"//商品详情页
 
 //虚线
 #import "ImaginaryLine.h"
@@ -44,10 +47,10 @@
 
 #pragma mark ----Anything---------------
 //状态栏白色
-#define StatusBarWhite           [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES]
+#define StatusBarWhite           [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO]
 
 //状态栏黑色
-#define StatusBarBlack           [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES]
+#define StatusBarBlack           [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO]
 
 //RGB色彩
 #define UIColorRGBA(r, g, b, a) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:(a)]
@@ -72,6 +75,7 @@
 
 #define SVProgress(AnyThing)      [SVProgressHUD showSuccessWithStatus:AnyThing];
 
+//#define PlaceImage           [UIImage imageNamed:@"186152612"]
 #define PlaceImage           [UIImage imageNamed:@"01.jpg"]
 
 

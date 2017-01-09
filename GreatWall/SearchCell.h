@@ -8,10 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import "Header.h"
+#import "SearchModel.h"
 
 @interface SearchCell : UITableViewCell
 
+@property (nonatomic, strong) SearchModel *Model;
 @property (nonatomic, strong) UIImageView *hotImg;
 @property (nonatomic, strong) UILabel *titleLab;
+@property (nonatomic, strong) UIButton *removeBtn;
+@property (nonatomic, strong) UIImageView *removeImg;
+
 + (instancetype)cellWithTableView:(UITableView *)tableView;
 @end

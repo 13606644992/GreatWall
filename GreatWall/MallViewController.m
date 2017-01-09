@@ -158,6 +158,11 @@ typedef NS_ENUM(NSInteger, MallSelectStyle) {
     cell.model = mode;
     return cell;
 }
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    //发送消息
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"DescriptionVC" object:nil userInfo:@{@"0":@"DescriptionVC"}]];
+}
 #pragma mark -----------Controller----------
 -(UITableView *)tabView
 {
@@ -190,7 +195,10 @@ typedef NS_ENUM(NSInteger, MallSelectStyle) {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 /*
 #pragma mark - Navigation
 

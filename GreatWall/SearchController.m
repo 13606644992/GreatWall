@@ -10,6 +10,7 @@
 #import "SearchController.h"
 #import "Header.h"
 #import "SearchCell.h"
+#import "SearchModel.h"
 
 @interface SearchController ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
 {
@@ -18,6 +19,8 @@
 }
 @property (nonatomic ,strong)UIButton *cancelBtn;
 @property (nonatomic ,strong)UIButton *removeBtn;
+@property (nonatomic ,strong)UILabel *removeLab;
+@property (nonatomic ,strong)UIImageView *removeImg;
 @property (nonatomic ,strong)UITextField *textField;
 @property (nonatomic ,strong)UIView *grayView;
 @property (nonatomic ,strong)NSArray *infoArray;
@@ -34,16 +37,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.navigationController.navigationBarHidden = YES;
     self.navigationController.interactivePopGestureRecognizer.delegate = (id)self;
     self.view.backgroundColor = UIColorRGBA(242, 242, 242, 1);
     filePath =[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/a.txt"];
     [self setSearchHeaderWithSearch];
-    [self setBoundsWithSearch];
+    [self.view addSubview:self.tabView];
+
+//    [self setBoundsWithSearch];
 }
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
+    self.navigationController.navigationBarHidden = YES;
     searchArray = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
     if (!searchArray) {
         searchArray = [[NSMutableArray alloc] initWithCapacity:0];
@@ -62,48 +67,56 @@
     __weak UIView *naView = view;
     [self.cancelBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(naView).with.offset(30);
-        make.right.equalTo(naView).with.offset(-15*HEIGHT);
-        make.size.mas_equalTo(CGSizeMake(40, 25));
+        make.right.equalTo(naView).with.offset(-18*HEIGHT);
+        make.size.mas_equalTo(CGSizeMake(35*WEIGHT, 16*HEIGHT));
     }];
     [self.view addSubview:view];
     [view addSubview:self.textField];
     [self.textField mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(naView).with.offset(20*HEIGHT);
-        make.top.equalTo(naView).with.offset(30);
-        make.right.mas_equalTo(self.cancelBtn.mas_left).with.offset(-10);
-        make.height.equalTo(@(25));
+        make.centerY.equalTo(self.cancelBtn);
+        make.right.mas_equalTo(self.cancelBtn.mas_left).with.offset(-11*WEIGHT);
+        make.height.equalTo(@(32*HEIGHT));
+        make.width.equalTo(@(291.5*WEIGHT));
     }]; 
 }
--(void)setBoundsWithSearch
+-(UIView *)setBoundsWithHotSearch
 {
-    [self.view addSubview:self.searchLabel];
-    [self.searchLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.view).with.offset(20*HEIGHT);
-        make.top.equalTo(self.view).with.offset(70);
-        make.size.mas_equalTo(CGSizeMake(100, 30));
+    UIView *HeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWindowWidth, 145*HEIGHT)];
+    HeaderView.backgroundColor = [UIColor whiteColor];
+
+    UIView *lightView = [[UIView alloc] init];
+    lightView.backgroundColor = LYColor_A7;
+    [HeaderView addSubview:lightView];
+    [lightView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.top.equalTo(HeaderView);
+        make.size.mas_equalTo(CGSizeMake(ScreenWindowWidth, 38*HEIGHT));
     }];
     
+    [HeaderView addSubview:self.searchLabel];
+    [self.searchLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(HeaderView).with.offset(18*WEIGHT);
+        make.centerY.equalTo(lightView);
+        make.size.mas_equalTo(CGSizeMake(100*WEIGHT, 12*HEIGHT));
+    }];
     /*********************************/
     __block UIButton *lastBtn = nil;
-    int intes = 20*HEIGHT;
+    int intes = 18*HEIGHT;
     int num = 4;
     for (int i = 0; i < 8; i++) {
 
         UIButton *searchBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         searchBtn.titleLabel.font = [UIFont systemFontOfSize:13*HEIGHT];
         [searchBtn setTitle:self.titleArray[i] forState:UIControlStateNormal];
-        [searchBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-        searchBtn.layer.borderWidth = 1.0f;
-        searchBtn.layer.borderColor = [UIColor grayColor].CGColor;
-        searchBtn.layer.cornerRadius = 5;
-        [searchBtn setBackgroundColor:[UIColor whiteColor]];
+        [searchBtn setTitleColor:LYColor_A4 forState:UIControlStateNormal];
+        searchBtn.layer.cornerRadius = 2.0f;
+        [searchBtn setBackgroundColor:LYColor_A7];
         searchBtn.clipsToBounds = YES;
         [searchBtn addTarget:self action:@selector(hotClick:) forControlEvents:UIControlEventTouchUpInside];
         searchBtn.tag = i+1;
-        [self.view addSubview:searchBtn];
+        [HeaderView addSubview:searchBtn];
         // 添加约束
         [searchBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.height.mas_equalTo(25*HEIGHT);
+            make.height.mas_equalTo(29*HEIGHT);
             if (lastBtn) {
                 make.width.equalTo(lastBtn);
             } else {
@@ -120,60 +133,116 @@
                 make.right.mas_equalTo(searchBtn.superview).offset(-intes);
             }
             if (i / num == 0) {
-                make.top.mas_equalTo(searchBtn.superview).offset(110);
+                make.top.mas_equalTo(searchBtn.superview).offset(56);
             } else {
-                make.top.mas_equalTo(110 + ( i / num )* (25*HEIGHT + intes));
+                make.top.mas_equalTo(56 + ( i / num )* (25*HEIGHT + intes));
             }
         }];
         lastBtn = searchBtn;
     }
-    [self.view addSubview:self.tabView];
+    
+//    [HeaderView addSubview:self.HistoryLabel];
+//    [self.HistoryLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.equalTo(HeaderView).with.offset(20*HEIGHT);
+//        make.top.equalTo(HeaderView).with.offset(5);
+//        make.size.mas_equalTo(CGSizeMake(100, 30*HEIGHT));
+//    }];
+//    [HeaderView addSubview:self.removeBtn];
+//    [self.removeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.right.mas_equalTo(HeaderView.mas_right).with.offset(-20*HEIGHT);
+//        make.top.equalTo(@(10));
+//        make.size.mas_equalTo(CGSizeMake(20*HEIGHT, 20*HEIGHT));
+//    }];
+    return HeaderView;
 
 }
--(void)hotClick:(UIButton *)sender
+-(UIView *)setBoundsWithHistoryView
 {
-    NSLog(@"----------%ld",sender.tag);
-}
-#pragma mark ------------TableViewDelegate---------
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
-{
-    return 1;
-}
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    return 40*HEIGHT;
-}
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    UIView *HeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWindowWidth, 40*HEIGHT)];
+    UIView *HeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWindowWidth, 38*HEIGHT)];
     HeaderView.backgroundColor = [UIColor whiteColor];
-    
-    
-    
-    
+    UIView *lightView = [[UIView alloc] init];
+    lightView.backgroundColor = LYColor_A7;
+    [HeaderView addSubview:lightView];
+    [lightView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.top.equalTo(HeaderView);
+        make.size.mas_equalTo(CGSizeMake(ScreenWindowWidth, 38*HEIGHT));
+    }];
     [HeaderView addSubview:self.HistoryLabel];
     [self.HistoryLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(HeaderView).with.offset(20*HEIGHT);
         make.top.equalTo(HeaderView).with.offset(5);
         make.size.mas_equalTo(CGSizeMake(100, 30*HEIGHT));
     }];
+    [HeaderView addSubview:self.removeLab];
+    [self.removeLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.mas_equalTo(HeaderView.mas_right).with.offset(-18*HEIGHT);
+        make.centerY.equalTo(self.HistoryLabel);
+        make.size.mas_equalTo(CGSizeMake(25*WEIGHT, 12*HEIGHT));
+    }];
+    [HeaderView addSubview:self.removeImg];
+    [self.removeImg mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.mas_equalTo(self.removeLab.mas_left).with.offset(-6*HEIGHT);
+        make.centerY.equalTo(self.HistoryLabel);
+        make.size.mas_equalTo(CGSizeMake(15*WEIGHT, 15*HEIGHT));
+    }];
     [HeaderView addSubview:self.removeBtn];
     [self.removeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.mas_equalTo(HeaderView.mas_right).with.offset(-20*HEIGHT);
-        make.top.equalTo(@(10));
-        make.size.mas_equalTo(CGSizeMake(20*HEIGHT, 20*HEIGHT));
+        make.left.equalTo(self.removeImg);
+        make.right.equalTo(self.removeLab);
+        make.top.bottom.equalTo(HeaderView);
     }];
     return HeaderView;
 }
+//热门搜索
+-(void)hotClick:(UIButton *)sender
+{
+    NSLog(@"----------%ld",sender.tag);
+}
+#pragma mark ------------TableViewDelegate---------
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 2;
+}
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return 0.01;
+}
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    if (section == 0) {
+        return 145*HEIGHT;
+    }
+    return 36*HEIGHT;
+}
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    if (section == 0) {
+        return [self setBoundsWithHotSearch];
+    }
+    return [self setBoundsWithHistoryView];
+}
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return searchArray.count;
+    if (section == 1) {
+        return searchArray.count;
+    }
+    return 0;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     SearchCell *cell = [SearchCell cellWithTableView:tableView];
-    
+    [cell.removeBtn addTarget:self action:@selector(onlyRemoveClick:) forControlEvents:UIControlEventTouchUpInside];
+    cell.removeBtn.tag = indexPath.row+100;
+    cell.titleLab.text = searchArray[indexPath.row];
     return cell;
+}
+-(void)onlyRemoveClick:(UIButton *)sender
+{
+    [searchArray removeObjectAtIndex:sender.tag-100];
+    [searchArray writeToFile:filePath atomically:YES];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tabView reloadData];
+    });
 }
 -(void)deleteTheSameArray
 {
@@ -205,7 +274,9 @@
     }
 }
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-
+    if ([textField.text isEqualToString:@""]) {
+        return NO;
+    }
     if (searchArray.count>=20) {
         [searchArray removeObjectAtIndex:searchArray.count-1];
     }
@@ -217,14 +288,19 @@
     });
     return YES;
 }
+-(void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    [self.view endEditing:YES];
+}
 #pragma mark ------------controller----------
 -(UITableView *)tabView
 {
     if (!_tabView) {
-        _tabView = [[UITableView alloc] initWithFrame:CGRectMake(0, 100+100*HEIGHT, ScreenWindowWidth, ScreenWindowHeight-100-100*HEIGHT) style:UITableViewStylePlain];
+        _tabView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, ScreenWindowWidth, ScreenWindowHeight-64) style:UITableViewStylePlain];
+        _tabView.backgroundColor = [UIColor whiteColor];
         _tabView.delegate = self;
         _tabView.dataSource = self;
-        _tabView.rowHeight = 40*HEIGHT;
+        _tabView.rowHeight = 59*HEIGHT;
     }
     return _tabView;
 }
@@ -233,12 +309,15 @@
     if (!_textField) {
         _textField = [[UITextField alloc] init];
         _textField.placeholder = @"汇保险";
-        _textField.borderStyle = UITextBorderStyleLine;
+        _textField.borderStyle = UITextBorderStyleNone;
         _textField.clearButtonMode = UITextFieldViewModeAlways;
-        _textField.font = [UIFont systemFontOfSize:14];
+        _textField.layer.cornerRadius = 16.0f;
+        _textField.clipsToBounds = YES;
+        _textField.backgroundColor = LYColor_A6;
+        _textField.font = [UIFont systemFontOfSize:14*WEIGHT];
         UIImageView *searchImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sousuo(siusuoyemian)"]];
-        searchImg.frame = CGRectMake(10, 3.5, 12.5, 12.5);
-        UIView *searchView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 30*WEIGHT, 20*HEIGHT)];
+        searchImg.frame = CGRectMake(13*WEIGHT, 3.5*HEIGHT, 12.5*WEIGHT, 12.5*HEIGHT);
+        UIView *searchView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 32.5*WEIGHT, 20*HEIGHT)];
         [searchView addSubview:searchImg];
         _textField.leftView = searchView;
         _textField.leftViewMode = UITextFieldViewModeAlways;
@@ -252,10 +331,9 @@
     if (!_cancelBtn) {
         _cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_cancelBtn setTitle:@"取消" forState:UIControlStateNormal];
-        [_cancelBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
-        _cancelBtn.titleLabel.font = [UIFont systemFontOfSize:14];
+        [_cancelBtn setTitleColor:LYColor_A1 forState:UIControlStateNormal];
+        _cancelBtn.titleLabel.font = [UIFont systemFontOfSize:16*WEIGHT];
         [_cancelBtn addTarget:self action:@selector(cancelBtnClick) forControlEvents:UIControlEventTouchUpInside];
-//        _cancelBtn.backgroundColor = [UIColor yellowColor];
      }
     return _cancelBtn;
 }
@@ -263,9 +341,9 @@
 {
     if (!_searchLabel) {
         _searchLabel = [[UILabel alloc] init];
-        _searchLabel.textColor = [UIColor grayColor];
-        _searchLabel.font = [UIFont systemFontOfSize:14*HEIGHT];
-        _searchLabel.text = @"大家都在搜";
+        _searchLabel.textColor = LYColor_A4;
+        _searchLabel.font = [UIFont systemFontOfSize:12*HEIGHT];
+        _searchLabel.text = @"热门搜索";
     }
     return _searchLabel;
 }
@@ -273,18 +351,35 @@
 {
     if (!_HistoryLabel) {
         _HistoryLabel = [[UILabel alloc] init];
-        _HistoryLabel.text=@"搜索记录";
-        _HistoryLabel.textColor = [UIColor grayColor];
+        _HistoryLabel.text=@"历史搜索";
+        _HistoryLabel.textColor = LYColor_A4;
         _HistoryLabel.font = [UIFont systemFontOfSize:14*HEIGHT];
     }
     return _HistoryLabel;
+}
+-(UILabel *)removeLab
+{
+    if (!_removeLab) {
+        _removeLab = [[UILabel alloc] init];
+        _removeLab.font = [UIFont systemFontOfSize:12*WEIGHT];
+        _removeLab.text = @"清空";
+        _removeLab.textColor =LYColor_A4;
+    }
+    return _removeLab;
+}
+-(UIImageView *)removeImg
+{
+    if (!_removeImg) {
+        _removeImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"qingkong(sousuoyeman)"]];
+    }
+    return _removeImg;
 }
 -(UIButton *)removeBtn
 {
     if (!_removeBtn) {
         _removeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_removeBtn setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
-        _removeBtn.backgroundColor = [UIColor redColor];
+//        [_removeBtn setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
+//        _removeBtn.backgroundColor = [UIColor redColor];
         [_removeBtn addTarget:self action:@selector(removeClick) forControlEvents:UIControlEventTouchUpInside];
     }
     return _removeBtn;
@@ -296,18 +391,13 @@
     }
     return _titleArray;
 }
--(void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-{
-    [self.view endEditing:YES];
-}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 -(void)cancelBtnClick
 {
-    
-    
     [self.navigationController popViewControllerAnimated:YES];
 }
 /*

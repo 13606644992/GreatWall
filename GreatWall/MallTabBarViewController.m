@@ -12,6 +12,7 @@
 #import "MallViewController.h"
 #import "SearchController.h"
 #import "CarMallViewController.h"
+#import "DescriptionController.h"
 
 static NSString *cellID = @"MMCell";
 @interface MallTabBarViewController ()<MMTabBarViewDataSource, MMTabBarViewDelegate>
@@ -30,7 +31,8 @@ static NSString *cellID = @"MMCell";
     // Do any additional setup after loading the view.
     indexPathSelect = 0;
     self.title=@"商城";
-
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(descriptionBtnClick:) name:@"DescriptionVC" object:nil];
+    //添加当前类对象为一个观察者，name和object设置为nil，表示接收一切通知
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17],NSForegroundColorAttributeName:[LYColor colorWithHexString:@"#2dce8f"]}];
     
     self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
@@ -49,6 +51,20 @@ static NSString *cellID = @"MMCell";
     [self.navigationController.navigationBar bringSubviewToFront:line];
 
 }
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
+    self.navigationController.navigationBarHidden = NO;
+    
+}
+-(void)descriptionBtnClick:(id)sender{
+    NSLog(@"%@",sender);
+    self.hidesBottomBarWhenPushed=YES;
+    DescriptionController *baseVC = [[DescriptionController alloc] init];
+    [self.navigationController pushViewController:baseVC animated:YES];
+    self.hidesBottomBarWhenPushed = NO;
+}
 - (UIImageView *)findHairlineImageViewUnder:(UIView *)view {
     if ([view isKindOfClass:UIImageView.class] && view.bounds.size.height <= 1.0) {
         return (UIImageView *)view;
@@ -61,18 +77,8 @@ static NSString *cellID = @"MMCell";
     }
     return nil;
 }
--(void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:YES];
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
-    self.navigationController.navigationBarHidden = NO;
-    
-}
--(void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:YES];
 
-}
+
 
 -(void)searchButtonOnClicked
 {

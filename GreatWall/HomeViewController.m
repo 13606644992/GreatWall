@@ -17,6 +17,7 @@
 @interface HomeViewController ()<UITableViewDelegate,UITableViewDataSource,AEImagePlayerViewDelegate,UISearchBarDelegate,UITextFieldDelegate,UIScrollViewDelegate>
 {
     UILabel *titleLab;
+    NSInteger indexSelect;//防止状态栏变色
 }
 @property (nonatomic ,strong) UITableView *tabView;
 /** 存放所有cell的高度 */
@@ -48,6 +49,10 @@
     self.navigationController.navigationBar.shadowImage = [UIImage new];
     [self.view addSubview:self.tabView];
     [self setViewHeader];
+    
+    [DataGreatWall PostTheHomePage:@"1" WithThePageSize:@"5" WithTheHomeBlock:^(NSString *code, NSString *mesasge, NSMutableArray *homeArray, NSString *page, NSError *error) {
+            
+    }];
 
 }
 
@@ -55,7 +60,7 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
-   
+    indexSelect = 0;
     self.navigationController.navigationBarHidden= NO;
     self.navigationItem.titleView.alpha = 0.8;
     self.searchBtn.alpha = 0.8;
@@ -116,22 +121,24 @@
 #pragma mark ------ScrollDelegate---------
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    if ([scrollView isEqual:self.tabView]) {
-        CGFloat  source =  scrollView.contentOffset.y/64;
-        if (source>=0.8) {
-            source = 0.8;
-        }else if (source<0){
-            source = 0;
+    if (indexSelect == 0) {
+        if ([scrollView isEqual:self.tabView]) {
+            CGFloat  source =  scrollView.contentOffset.y/64;
+            if (source>=0.8) {
+                source = 0.8;
+            }else if (source<0){
+                source = 0;
+            }
+            self.whiteView.alpha = source;
+            if (scrollView.contentOffset.y>=64) {
+                self.searchBtn.backgroundColor = LYColor_A6;
+                StatusBarBlack;
+            }else{
+                self.searchBtn.backgroundColor = [UIColor whiteColor];
+                StatusBarWhite;
+            }
         }
-        self.whiteView.alpha = source;
-        if (scrollView.contentOffset.y>=64) {
-            self.searchBtn.backgroundColor = LYColor_A6;
-            StatusBarBlack;
-        }else{
-            self.searchBtn.backgroundColor = [UIColor whiteColor];
-            StatusBarWhite;
-        }
-    }
+     }
 }
 #pragma mark -----MJRefresh----------
 -(void)MJHeaderLoadTable
@@ -228,6 +235,14 @@
         return [self sectionOneView];
     }
     return nil;
+}
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    indexSelect = 1;
+    self.hidesBottomBarWhenPushed=YES;
+    DescriptionController *baseVC = [[DescriptionController alloc] init];
+    [self.navigationController pushViewController:baseVC animated:YES];
+    self.hidesBottomBarWhenPushed = NO;
 }
 //二区区头（爆款推荐）
 -(UIView *)setSectionOneHeaderView
@@ -530,6 +545,7 @@
 {
     if (!_tabView) {
         _tabView = [[UITableView alloc] initWithFrame:CGRectMake(0, -64, ScreenWindowWidth, ScreenWindowHeight+5) style:UITableViewStyleGrouped];
+        _tabView.tag = 10086;
         _tabView.backgroundColor = LYColor_A7;
         _tabView.delegate = self;
         _tabView.dataSource = self;

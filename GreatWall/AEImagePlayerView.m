@@ -7,7 +7,7 @@
 //
 
 #import "AEImagePlayerView.h"
-#import <UIImageView+WebCache.h>
+#import "UIImageView+WebCache.h"
 #import "AEPageModel.h"
 #import "AEPageView.h"
 #import "AEElement.h"

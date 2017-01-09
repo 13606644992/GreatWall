@@ -83,11 +83,11 @@
         make.height.mas_equalTo(self.nameTextField);
     }];
 
-    [self setTextFieldLeftPadding:self.nameTextField forWidth:85 title:@"    收货人"];
-    [self setTextFieldLeftPadding:self.numTextField forWidth:85 title:@"    联系方式"];
-    [self setTextFieldLeftPadding:self.postalTextField forWidth:85 title:@"    邮政编码"];
-    [self setTextFieldLeftPadding:self.areaTextField forWidth:85 title:@"    所在地区"];
-    [self setTextFieldLeftPadding:self.addressTextField forWidth:85 title:@"    详细地址"];
+    [self setTextFieldLeftPadding:self.nameTextField forWidth:85*WIDTH title:@"    收货人"];
+    [self setTextFieldLeftPadding:self.numTextField forWidth:85*WIDTH title:@"    联系方式"];
+    [self setTextFieldLeftPadding:self.postalTextField forWidth:85*WIDTH title:@"    邮政编码"];
+    [self setTextFieldLeftPadding:self.areaTextField forWidth:85*WIDTH title:@"    所在地区"];
+    [self setTextFieldLeftPadding:self.addressTextField forWidth:85*WIDTH title:@"    详细地址"];
     
     
     [self.nameTextField setPlaceholder:@"请输入真实姓名"];
@@ -104,7 +104,7 @@
         [self.view addSubview:line];
         [line mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_equalTo(18*WIDTH);
-            make.top.mas_equalTo(55*(i + 1) + 13*HEIGHT + i);
+            make.top.mas_equalTo(55*(i + 1)*HEIGHT + 13*HEIGHT + i);
             make.right.mas_equalTo(0);
             make.height.mas_equalTo(1);
         }];
