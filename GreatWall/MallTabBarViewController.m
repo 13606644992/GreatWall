@@ -39,11 +39,10 @@ static NSString *cellID = @"MMCell";
     UIView * msgView= [[UIView alloc] initWithFrame:CGRectMake(0 ,0 ,17 ,17)];
     UIButton *searchBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [searchBtn setBackgroundImage:[UIImage imageNamed:@"sousuo(shancgheng)"] forState:UIControlStateNormal];
-    searchBtn.frame = CGRectMake(0,0,17, 17);
+    searchBtn.frame = CGRectMake(0,0,17, 17);     
     [searchBtn addTarget:self action:@selector(searchButtonOnClicked) forControlEvents:UIControlEventTouchDown];
     [msgView addSubview:searchBtn];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:msgView];
-
     [self initMehod];
     UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height-1, self.navigationController.navigationBar.frame.size.width, 0.5)];
     line.backgroundColor = [LYColor colorWithHexString:@"#e3e3e3"];

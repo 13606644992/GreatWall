@@ -49,34 +49,35 @@
         make.height.equalTo(@(16*HEIGHT));
         make.right.equalTo(self.contentView).with.offset(-13*WEIGHT);
     }];
-//    金额种类
-    [self.contentView addSubview:self.rmbLab];
-    [self.rmbLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.desLab);
-        make.top.mas_equalTo(self.desLab.mas_bottom).with.offset(13*HEIGHT);
-        make.size.mas_equalTo(CGSizeMake(14*WEIGHT, 14*HEIGHT));
-    }];
+
 //    金额
     [self.contentView addSubview:self.amountLab];
     [self.amountLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.rmbLab.mas_right);
-        make.top.mas_equalTo(self.desLab.mas_bottom).with.offset(11*HEIGHT);
+        make.left.mas_equalTo(self.titleImg.mas_right).with.offset(27*WIDTH);
+        make.top.mas_equalTo(self.desLab.mas_bottom).with.offset(13*HEIGHT);
         make.width.equalTo(@(60*WEIGHT));
         make.height.equalTo(@(16*HEIGHT));
+    }];
+    //    金额种类
+    [self.contentView addSubview:self.rmbLab];
+    [self.rmbLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.desLab);
+        make.bottom.equalTo(self.amountLab);
+        make.size.mas_equalTo(CGSizeMake(14*WEIGHT, 14*HEIGHT));
     }];
 //    起
     [self.contentView addSubview:self.qiLab];
     [self.qiLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.amountLab.mas_right);
-        make.top.mas_equalTo(self.desLab.mas_bottom).with.offset(13*HEIGHT);
+        make.bottom.equalTo(self.amountLab);
         make.size.mas_equalTo(CGSizeMake(14*WEIGHT, 14*HEIGHT));
     }];
 //    返现背景图
     [self.contentView addSubview:self.fanImg];
     [self.fanImg mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.qiLab.mas_right).with.offset(16*WEIGHT);
-        make.top.mas_equalTo(self.desLab.mas_bottom).with.offset(11*HEIGHT);
-        make.height.equalTo(@(17*HEIGHT));
+        make.right.equalTo(self.contentView).with.offset(-13*WEIGHT);
+        make.top.mas_equalTo(self.desLab.mas_bottom).with.offset(13*HEIGHT);
+        make.height.equalTo(@(16*HEIGHT));
         make.width.equalTo(@(80*WEIGHT));
     }];
 //    返现金额比例

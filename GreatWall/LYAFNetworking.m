@@ -20,7 +20,6 @@
     manager.responseSerializer= [AFHTTPResponseSerializer serializer];
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html",@"application/json",@"text/plain", nil];
     manager.requestSerializer.timeoutInterval = Wait_Time;
-
     
     NSMutableDictionary *dictory = [[NSMutableDictionary alloc] init];
     NSInteger indexWidth = ScreenWindowWidth;
@@ -35,7 +34,7 @@
     [manager.requestSerializer setValue:@"2222222" forHTTPHeaderField:@"deviceNo"];
     [dictory setValue:@"POST" forKey:@"method"];//md5_key
     
-
+//    NSLog(@"---Header-%@",manager.requestSerializer.HTTPRequestHeaders);
     NSData *dataString = [NSJSONSerialization dataWithJSONObject:lyparameters options:NSJSONWritingPrettyPrinted error:nil];
     NSString *jsonString = [[NSString alloc] initWithData:dataString encoding:NSUTF8StringEncoding];
     

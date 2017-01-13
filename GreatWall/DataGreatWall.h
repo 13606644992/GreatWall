@@ -12,5 +12,7 @@ typedef void(^HomeListBlock)(NSString *code,NSString *mesasge,NSMutableArray *ho
 @interface DataGreatWall : NSObject
 
 +(void)PostTheHomePage:(NSString *)pageIndex WithThePageSize:(NSString *)pageSize WithTheHomeBlock:(HomeListBlock)block;
-
++(void)PostTheHomeSpecialAndProductList:(NSString *)pageIndex WithThePageSize:(NSString *)pageSize WithTheProductSize:(NSString *)productSize WithBlock:(HomeListBlock)block;
++(void)PostTheScrollAndTheTypeTitle:(NSString *)userID WithBlock:(HomeListBlock)block;
++(void)PostTheHomePageInfo:(NSString *)userID WithSpecialSize:(NSString *)specialSize WithTheProduct:(NSString *)product WithBlock:(HomeListBlock)block;
 @end

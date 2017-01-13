@@ -1,5 +1,5 @@
 //
-//  DescriptionTypeTwoCell.h
+//  DescriptionDateCell.h
 //  GreatWall
 //
 //  Created by 李阳 on 2017/1/9.
@@ -9,14 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "Header.h"
 
-@interface DescriptionTypeTwoCell : UITableViewCell
-
+@interface DescriptionDateCell : UITableViewCell
 @property (nonatomic ,strong) UILabel *titleLab;
 @property (nonatomic ,strong) UILabel *detialLab;
 @property (nonatomic ,strong) UIImageView *detialImg;
 @property (nonatomic ,strong) UIButton *detailButton;
 
+
 + (instancetype)cellWithTableView:(UITableView *)tableView;
-
-
 @end

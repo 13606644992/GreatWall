@@ -1,20 +1,19 @@
 //
-//  DescriptionTypeTwoCell.m
+//  DescriptionDateCell.m
 //  GreatWall
 //
 //  Created by 李阳 on 2017/1/9.
 //  Copyright © 2017年 GJ. All rights reserved.
 //
 
-#import "DescriptionTypeTwoCell.h"
+#import "DescriptionDateCell.h"
 
-@implementation DescriptionTypeTwoCell
-
+@implementation DescriptionDateCell
 + (instancetype)cellWithTableView:(UITableView *)tableView
 {
-    static NSString *ID = @"DescriptionTypeTwoCell";
+    static NSString *ID = @"DescriptionDateCell";
     
-    DescriptionTypeTwoCell *cell = [tableView dequeueReusableCellWithIdentifier:ID];
+    DescriptionDateCell *cell = [tableView dequeueReusableCellWithIdentifier:ID];
     if (cell == nil) {
         cell = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass(self) owner:nil options:nil] lastObject];
         [cell initAnyThingWithCell];
@@ -37,7 +36,7 @@
         make.width.equalTo(@(12.5*WIDTH));
         make.height.equalTo(@(7.5*HEIGHT));
     }];
-
+    
     [self.contentView addSubview:self.detialLab];
     [self.detialLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(self.detialImg.mas_left).with.offset(-6*WIDTH);
@@ -82,10 +81,10 @@
 {
     if (!_detialLab) {
         _detialLab = [[UILabel alloc] init];
-        _detialLab.textColor = LYColor_A3;
+        _detialLab.textColor = LYColor_A4;
         _detialLab.textAlignment = NSTextAlignmentRight;
         _detialLab.font = [UIFont systemFontOfSize:14*WIDTH];
-        _detialLab.text = @"1-7天";
+        _detialLab.text = @"请选择";
     }
     return _detialLab;
 }
@@ -97,9 +96,4 @@
     return _detailButton;
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:NO animated:NO];
-    
-    // Configure the view for the selected state
-}
 @end

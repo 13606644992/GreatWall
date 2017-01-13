@@ -10,15 +10,23 @@
 #import "Header.h"
 #import "DescriptionCell.h"
 #import "DescriptionTypeTwoCell.h"
+#import "DescriptionTypeSexCell.h"
+#import "DescriptionDateCell.h"
+#import "DescriptionImageCell.h"
 
 @interface DescriptionController ()<UITableViewDelegate,UITableViewDataSource>
 {
     BOOL isOpen[10];
+    NSArray *titleArray;
+    NSString *selectSex;
+    NSString *SelectDate;
 }
 @property(nonatomic ,strong)UITableView *tableView;
 @property(nonatomic ,strong)UIButton *backButton;
 @property(nonatomic ,strong)UIButton *collectButton;
 @property(nonatomic ,strong)UIView *footView;
+@property(nonatomic ,strong)UIView *grayView;
+@property(nonatomic ,strong)UIView *bottomView;
 @property(nonatomic ,strong)UILabel *amountLab;
 @property(nonatomic ,strong)UIButton *shareButton;
 @property(nonatomic ,strong)UIImageView *shareImg;
@@ -29,7 +37,7 @@
 @property(nonatomic ,strong)UILabel *titleLab;
 @property (nonatomic, strong) UIImageView *fanImg;
 @property (nonatomic, strong) UILabel *fanLab;
-@property (nonatomic, strong) NSMutableDictionary *heights;
+@property (nonatomic, strong) NSArray *fourArray;
 
 
 
@@ -57,6 +65,8 @@
         make.size.mas_equalTo(CGSizeMake(32*WEIGHT, 32*WEIGHT));
     }];
     [self setTheFootView];
+    titleArray = @[@"投保年龄",@"保障时间",@"职业类别",@"被保人性别",@"出生日期"];
+    selectSex = @"女";
 }
 -(void)viewWillAppear:(BOOL)animated
 {
@@ -132,13 +142,13 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     if (section == 0) {
-        return 302*HEIGHT;
+        return 342*HEIGHT;
     }else if (section ==1){
         return 107*HEIGHT;
     }else if (section == 2){
-        return 40*HEIGHT;
+        return 39*HEIGHT;
     }
-    return 75*HEIGHT;
+    return 74*HEIGHT;
 }
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
@@ -157,68 +167,116 @@
 }
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 3;
+    return 4;
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (section == 1) {
-        return 3;
+        return 5;
+    }else if (section == 2){
+        return 1;
     }
     return 0;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == 0) {
-        return 49*HEIGHT;
+    if (indexPath.section == 1) {
+        if (indexPath.row == 0) {
+            return 49*HEIGHT;
+        }
+        if (!isOpen[indexPath.row+1]) {
+            return 49*HEIGHT;
+        }else{
+            return 75*HEIGHT;
+        }
+
     }
-    NSLog(@"-----111111111111-----%@--",self.heights);
-    if (!isOpen[indexPath.row+1]) {
-        NSLog(@"------------");
-        
-        return 49*HEIGHT;
-    }else{
-        return 98*HEIGHT;
-    }
-//    return [self.heights[@(indexPath.row)] doubleValue];
-    
+//    if (indexPath.section == 2) {
+        return 119*HEIGHT;
+//    }
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == 0) {
-        DescriptionCell *cell = [DescriptionCell cellWithTableView:tableView];
+    if (indexPath.section == 1) {
+        if (indexPath.row == 0||indexPath.row == 2) {
+            DescriptionCell *cell = [DescriptionCell cellWithTableView:tableView];
+            cell.titleLab.text = titleArray[indexPath.row];
+            return cell;
+        }else if (indexPath.row == 1){
+            DescriptionTypeTwoCell *cell = [DescriptionTypeTwoCell cellWithTableView:tableView];
+            [cell.detailButton  addTarget:self action:@selector(searchClick:) forControlEvents:UIControlEventTouchUpInside];
+            cell.detailButton.tag = indexPath.row+1;
+            cell.titleLab.text = titleArray[indexPath.row];
+            cell.tag = indexPath.row+100;
+            return cell;
+        }else if (indexPath.row == 3){
+            DescriptionTypeSexCell *cell = [DescriptionTypeSexCell cellWithTableView:tableView];
+            [cell.detailButton  addTarget:self action:@selector(searchClick:) forControlEvents:UIControlEventTouchUpInside];
+            cell.detailButton.tag = indexPath.row+1;
+            cell.titleLab.text = titleArray[indexPath.row];
+            cell.tag = indexPath.row+100;
+            [cell.mainBtn addTarget:self action:@selector(sexSelectMain:) forControlEvents:UIControlEventTouchUpInside];
+            cell.mainBtn.tag = indexPath.row+200;
+            [cell.womanBtn addTarget:self action:@selector(sexSelectWoman:) forControlEvents:UIControlEventTouchUpInside];
+            cell.womanBtn.tag = indexPath.row+201;
+            cell.detialLab.text = selectSex;
+            if (!isOpen[indexPath.row+1]) {
+                cell.womanBtn.hidden = YES;cell.mainBtn.hidden = YES;}else{cell.womanBtn.hidden = NO;cell.mainBtn.hidden = NO;
+                }
+            return cell;
+        }
+        DescriptionDateCell *cell = [DescriptionDateCell cellWithTableView:tableView];
+        [cell.detailButton  addTarget:self action:@selector(dataPickSelectTime:) forControlEvents:UIControlEventTouchUpInside];
+        cell.detailButton.tag = indexPath.row+300;
+        cell.titleLab.text = titleArray[indexPath.row];
+        cell.tag = indexPath.row+100;
         return cell;
     }
-    DescriptionTypeTwoCell *cell = [DescriptionTypeTwoCell cellWithTableView:tableView];
-    [cell.detailButton  addTarget:self action:@selector(searchClick:) forControlEvents:UIControlEventTouchUpInside];
-    cell.detailButton.tag = indexPath.row+1;
-    cell.tag = indexPath.row+100;
-//    [self.heights setObject:@([cell cellHeight]) forKey:@(indexPath.row)];
+    DescriptionImageCell *cell = [DescriptionImageCell cellWithTableView:tableView];
     
     return cell;
+
 }
--(void)searchClick:(UIButton *)sender
+-(void)dataPickSelectTime:(UIButton *)sender
 {
-    
-//    DescriptionTypeTwoCell *cell = (DescriptionTypeTwoCell *)[self.tableView viewWithTag:sender.tag+99];
-    isOpen[sender.tag] = !isOpen[sender.tag];
-//    [self.heights setObject:@([cell cellHeight]) forKey:@(cell.tag-100)];
-    NSLog(@"----------%@--",self.heights);
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:sender.tag-1 inSection:1];
-        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-    });
+    [self.view addSubview:self.bottomView];
+    [UIView animateWithDuration:0.3f animations:^{
+        CGRect rect = self.bottomView.frame;
+        rect.origin.y = ScreenWindowHeight-240*HEIGHT;
+        self.bottomView.frame = rect;
+    } completion:^(BOOL finished) {
+        [self.view addSubview:self.grayView];
+        [self.view bringSubviewToFront:self.bottomView];
+    }];
+}
+-(void)cancelClick
+{
+    [UIView animateWithDuration:0.3f animations:^{
+        CGRect rect = self.bottomView.frame;
+        rect.origin.y = ScreenWindowHeight;
+        self.bottomView.frame = rect;
+    } completion:^(BOOL finished) {
+        [self.bottomView removeFromSuperview];
+        [self.grayView removeFromSuperview];
+    }];
 
 }
-#pragma mark  -----------Header--------
+-(void)sureClick
+{
+    NSLog(@"queren-----------");
+}
+
+#pragma mark  ----------TheFirstHeader--------
+
+//第一区（标题图片，返回，收藏）
 -(UIView *)setTheFirstHeaderView
 {
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWindowWidth,  302*HEIGHT)];
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWindowWidth,  342*HEIGHT)];
     UIImageView *bgImg = [[UIImageView alloc] initWithImage:PlaceImage];
     [headerView addSubview:bgImg];
     [bgImg mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.top.right.equalTo(headerView);
-        make.height.equalTo(@(241*HEIGHT));
+        make.height.equalTo(@(281*HEIGHT));
     }];
     [headerView addSubview:self.typeLab];
     [self.typeLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -260,6 +318,9 @@
     
     return headerView;
 }
+#pragma mark  --------TheSecondHeader--------------------
+
+//第二区（动态cell，内容选择）
 -(UIView *)setTheSecondHeaderView
 {
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWindowWidth,  87.5*HEIGHT)];
@@ -340,34 +401,100 @@
     
     return headerView;
 }
+-(void)sexSelectMain:(UIButton *)sender
+{
+    isOpen[sender.tag-199] = !isOpen[sender.tag-199];
+    
+    DescriptionTypeSexCell *cell = (DescriptionTypeSexCell *)[self.tableView viewWithTag:sender.tag-100];
+    cell.detialLab.text = @"男";
+    selectSex = @"男";
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+    });
+}
+-(void)sexSelectWoman:(UIButton *)sender
+{
+    isOpen[sender.tag-200] = !isOpen[sender.tag-200];
+    DescriptionTypeSexCell *cell = (DescriptionTypeSexCell *)[self.tableView viewWithTag:sender.tag-101];
+    cell.detialLab.text = @"女";
+    selectSex = @"女";
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+    });
+}
+-(void)searchClick:(UIButton *)sender
+{
+    isOpen[sender.tag] = !isOpen[sender.tag];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        [self.tableView reloadData];
+    });
+}
+- (NSString *)dateToStringWithDate:(NSDate *)selectDate {
+    NSDateFormatter *selectDateFormatter = [[NSDateFormatter alloc] init];
+    selectDateFormatter.dateFormat = @"yyyy-MM-dd"; // 设置时间的格式
+    NSString * dateAndTime = [selectDateFormatter stringFromDate:selectDate]; // 把date类型转为设置好格式的string类型
+    return dateAndTime;
+}
+- (void)datePickerValueChanged:(UIDatePicker *)datepiker {
+    SelectDate = [self dateToStringWithDate:[datepiker date]];
+}
+#pragma mark  --------TheThirdHeader--------------------
 -(UIView *)setTheThirdHeaderView
 {
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWindowWidth,  40*HEIGHT)];
-    
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWindowWidth,  39*HEIGHT)];
+    UILabel *titleLab = [[UILabel alloc] init];
+    titleLab.text = @"产品详情";
+    titleLab.textColor = LYColor_A4;
+    titleLab.font = [UIFont systemFontOfSize:13*WIDTH];
+    [headerView addSubview:titleLab];
+    [titleLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(headerView).with.offset(18*WIDTH);
+        make.centerY.equalTo(headerView);
+        make.height.equalTo(@(13*HEIGHT));
+    }];
     return headerView;
 }
+#pragma mark  --------TheThirdHeader--------------------
+
 -(UIView *)setTheFourthHeaderView
 {
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWindowWidth,  75*HEIGHT)];
     
+    CGFloat kuan = ScreenWindowWidth/4;
+    CGFloat gao = 74*HEIGHT;
+    for (NSInteger i = 0; i<4; i++) {
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+        button.frame = CGRectMake(i*kuan, 0, kuan, gao);
+        button.tag = 50+i;
+        [button setTitle:self.fourArray[i] forState:UIControlStateNormal];
+        [button setTitleColor:LYColor_A3 forState:UIControlStateNormal];
+        button.titleLabel.font = [UIFont systemFontOfSize:12*WIDTH];
+        [button addTarget:self action:@selector(tiaoKuanClick:) forControlEvents:UIControlEventTouchUpInside];
+        [headerView addSubview:button];
+        if (i!=3) {
+            UILabel *lineLab = [[UILabel alloc] initWithFrame:CGRectMake((i+1)*kuan, 32*HEIGHT, 0.5, 12*HEIGHT)];
+            lineLab.backgroundColor = LYColor_A6;
+            [headerView addSubview:lineLab];
+        }
+    }
     return headerView;
 }
 
-#pragma mark  -----------Controller--------
--(NSMutableDictionary *)heights
+-(void)tiaoKuanClick:(UIButton *)sender
 {
-    if (!_heights) {
-        _heights = [NSMutableDictionary dictionaryWithCapacity:0];
-    }
-    return _heights;
+    NSLog(@"-----%ld",sender.tag);
 }
+#pragma mark  -----------Controller--------
+
 -(UITableView *)tableView
 {
     if (!_tableView) {
-        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWindowWidth, ScreenWindowHeight-59) style:UITableViewStyleGrouped];
+        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -59, ScreenWindowWidth, ScreenWindowHeight) style:UITableViewStyleGrouped];
         _tableView.backgroundColor = [UIColor whiteColor];
         _tableView.delegate =self;
         _tableView.dataSource = self;
+        _tableView.separatorColor = LYColor_A7;
     }
     return _tableView;
 }
@@ -503,6 +630,71 @@
         _titleLab.text = @"成人综合意外险";
     }
     return _titleLab;
+}
+-(UIView *)bottomView
+{
+    if (!_bottomView) {
+        _bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, ScreenWindowHeight, ScreenWindowWidth, 240*HEIGHT)];
+        _bottomView.backgroundColor = [UIColor whiteColor];
+        UIButton *cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [cancelBtn setTitle:@"取消" forState:UIControlStateNormal];
+        [cancelBtn setTitleColor:LYColor_A3 forState:UIControlStateNormal];
+        [cancelBtn addTarget:self action:@selector(cancelClick) forControlEvents:UIControlEventTouchUpInside];
+        cancelBtn.titleLabel.font = [UIFont systemFontOfSize:14*WIDTH];
+        [_bottomView addSubview:cancelBtn];
+        [cancelBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.top.equalTo(_bottomView);
+            make.size.mas_equalTo(CGSizeMake(80*WIDTH, 40*HEIGHT));
+        }];
+        UIButton *sureBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [sureBtn setTitle:@"确认" forState:UIControlStateNormal];
+        sureBtn.titleLabel.font = [UIFont systemFontOfSize:14*WIDTH];
+        [sureBtn setTitleColor:LYColor_A3 forState:UIControlStateNormal];
+        [sureBtn addTarget:self action:@selector(sureClick) forControlEvents:UIControlEventTouchUpInside];
+        [_bottomView addSubview:sureBtn];
+        [sureBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.right.top.equalTo(_bottomView);
+            make.size.mas_equalTo(CGSizeMake(80*WIDTH, 40*HEIGHT));
+        }];
+        
+        UIDatePicker *datePicker = [[UIDatePicker alloc] init];
+        [datePicker setLocale:[[NSLocale alloc]initWithLocaleIdentifier:@"zh_CN"]];
+        [datePicker setTimeZone:[NSTimeZone localTimeZone]];
+        [datePicker setDate:[NSDate date] animated:YES];
+        datePicker.backgroundColor = [UIColor whiteColor];
+        UIDatePickerMode  pikcerMode = UIDatePickerModeDate;
+        NSDate *maxDate = [[NSDate alloc]initWithTimeIntervalSince1970:20*365*24*60*60];
+        datePicker.minimumDate = maxDate;
+        NSDate *minDate = [NSDate date];
+        datePicker.maximumDate = minDate;
+        [datePicker setDatePickerMode:pikcerMode];
+        [datePicker addTarget:self action:@selector(datePickerValueChanged:) forControlEvents:UIControlEventValueChanged];
+        [_bottomView addSubview:datePicker];
+        SelectDate = [self dateToStringWithDate:[NSDate date]];
+        [datePicker mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(cancelBtn);
+            make.top.mas_equalTo(cancelBtn.mas_bottom);
+            make.size.mas_equalTo(CGSizeMake(ScreenWindowWidth, 200*HEIGHT));
+        }];
+    }
+    return _bottomView;
+}
+
+-(UIView *)grayView
+{
+    if (!_grayView) {
+        _grayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWindowWidth, ScreenWindowHeight)];
+        _grayView.backgroundColor = [UIColor lightGrayColor];
+        _grayView.alpha = 0.4;
+    }
+    return _grayView;
+}
+-(NSArray *)fourArray
+{
+    if (!_fourArray) {
+        _fourArray = @[@"投保须知",@"理赔流程",@"常见问题",@"案例分析"];
+    }
+    return _fourArray;
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

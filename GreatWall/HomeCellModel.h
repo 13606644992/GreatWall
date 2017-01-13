@@ -10,4 +10,8 @@
 
 @interface HomeCellModel : NSObject
 
+@property(nonatomic ,strong)NSString *adLink;//广告链接
+@property(nonatomic ,strong)NSString *adURL;//广告图片URL
+
+
 @end

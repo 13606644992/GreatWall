@@ -50,10 +50,21 @@
     [self.view addSubview:self.tabView];
     [self setViewHeader];
     
-    [DataGreatWall PostTheHomePage:@"1" WithThePageSize:@"5" WithTheHomeBlock:^(NSString *code, NSString *mesasge, NSMutableArray *homeArray, NSString *page, NSError *error) {
-            
-    }];
+//    [DataGreatWall PostTheHomePage:@"1" WithThePageSize:@"5" WithTheHomeBlock:^(NSString *code, NSString *mesasge, NSMutableArray *homeArray, NSString *page, NSError *error) {
+    
+//    }];
 
+//    [DataGreatWall PostTheHomeSpecialAndProductList:@"1" WithThePageSize:@"2" WithTheProductSize:@"3" WithBlock:^(NSString *code, NSString *mesasge, NSMutableArray *homeArray, NSString *page, NSError *error) {
+//        
+//    }];
+//    [DataGreatWall PostTheScrollAndTheTypeTitle:@"" WithBlock:^(NSString *code, NSString *mesasge, NSMutableArray *homeArray, NSString *page, NSError *error) {
+//        
+//    }];
+//    NSLog(@"----json-----%@",[NSString alloc]initWithUTF8String:);
+    [DataGreatWall PostTheHomePageInfo:@"1" WithSpecialSize:@"2" WithTheProduct:@"2" WithBlock:^(NSString *code, NSString *mesasge, NSMutableArray *homeArray, NSString *page, NSError *error) {
+        
+    }];
+    
 }
 
 
@@ -205,7 +216,7 @@
     }else if (section==1){
         return 50*HEIGHT;
     }
-    return 140*HEIGHT;
+    return 156*HEIGHT;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
@@ -293,16 +304,16 @@
 //精选专题区头
 -(UIView *)setSectionOtherViewHeaderWithSection:(NSInteger)section
 {
-    UIView *HeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWindowWidth, 140*HEIGHT)];
+    UIView *HeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWindowWidth, 156*HEIGHT)];
     HeaderView.backgroundColor = [UIColor whiteColor];
 //    专题图片
     UIButton *siftBtn1 = [UIButton buttonWithType:UIButtonTypeCustom];
     [siftBtn1 addTarget:self action:@selector(siftBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     siftBtn1.tag = section+1;
-    siftBtn1.frame = CGRectMake(13*WEIGHT, 21*HEIGHT, ScreenWindowWidth-26*WEIGHT, 119*HEIGHT);
+    siftBtn1.frame = CGRectMake(13*WEIGHT, 21*HEIGHT, ScreenWindowWidth-26*WEIGHT, 135*HEIGHT);
     [siftBtn1 sd_setImageWithURL:[NSURL URLWithString:@""] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"01.jpg"]];
 //    切割图片
-    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:siftBtn1.bounds byRoundingCorners:UIRectCornerAllCorners cornerRadii:CGSizeMake(4, 4)];
+    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:siftBtn1.bounds byRoundingCorners:UIRectCornerAllCorners cornerRadii:CGSizeMake(2, 2)];
     CAShapeLayer *maskLayer = [[CAShapeLayer alloc]init];
     maskLayer.frame = siftBtn1.bounds;
     maskLayer.path = maskPath.CGPath;
@@ -394,7 +405,9 @@
         make.right.equalTo(headerView).with.offset(0);
         make.height.equalTo(@(119*HEIGHT));
     }];
-    [self setFarViewWith:self.farView];
+    if (self.farView.subviews.count==0) {
+        [self setFarViewWith:self.farView];
+    }
 //    轮播图遮盖图
     [headerView addSubview:self.bannerConner];
     [self.bannerConner mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -405,7 +418,6 @@
 //    广播
     [headerView addSubview:self.bulleView];
     [self.bulleView mas_makeConstraints:^(MASConstraintMaker *make) {
-        
         make.left.equalTo(headerView).with.offset(0);
         make.top.mas_equalTo(self.farView.mas_bottom).with.offset(1*HEIGHT);
         make.right.equalTo(headerView).with.offset(0);
@@ -438,14 +450,18 @@
     [ccpView clickTitleLabel:^(NSInteger index,NSString *titleString) {
         NSLog(@"%ld-----%@",index,titleString);
     }];
-    [self.bulleView addSubview:ccpView];
-    [ccpView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.bulletinLab.mas_right).with.offset(11*WEIGHT);
-        make.top.equalTo(self.bulleView).with.offset(0);
-        make.height.equalTo(@(height));
-        make.width.equalTo(@(kuan));
-    }];
-    [self.view layoutIfNeeded];
+    NSLog(@"------%ld",self.bulleView.subviews.count);
+    if (self.bulleView.subviews.count == 2) {
+        [self.bulleView addSubview:ccpView];
+        [ccpView mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(self.bulletinLab.mas_right).with.offset(11*WEIGHT);
+            make.top.equalTo(self.bulleView).with.offset(0);
+            make.height.equalTo(@(height));
+            make.width.equalTo(@(kuan));
+        }];
+        [self.view layoutIfNeeded];
+    }
+
     return headerView;
 }
 //快捷栏（一区）

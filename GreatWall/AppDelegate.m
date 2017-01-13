@@ -41,7 +41,8 @@
     UserViewController *mineVC = [[UserViewController alloc]init];
     UINavigationController *homeNaVC = [[UINavigationController alloc] initWithRootViewController:homeVC];
     homeNaVC.tabBarItem.title = @"首页";
-    homeNaVC.tabBarItem.image = [UIImage imageNamed:@"ico@3x"];
+    homeNaVC.tabBarItem.image = [[UIImage imageNamed:@"shouyen(weixuanzhong)"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    homeNaVC.tabBarItem.selectedImage = [[UIImage imageNamed:@"shouyexuanzhongzhuangtai"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     UINavigationController *mallNaVC = [[UINavigationController alloc] initWithRootViewController:mallVC];
     mallNaVC.tabBarItem.title = @"商城";
     mallNaVC.tabBarItem.image = [UIImage imageNamed:@"shangcheng(weixuanzhong)"];
