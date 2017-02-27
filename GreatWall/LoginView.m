@@ -10,7 +10,9 @@
 #import "Header.h"
 #import "LYColor.h"
 @implementation LoginView
-
+{
+    BOOL isUp;
+}
 
 /*
 // Only override drawRect: if you perform custom drawing.
@@ -237,12 +239,12 @@
     UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [self addSubview:backBtn];
     [backBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(33*HEIGHT);
+        make.top.mas_equalTo(25*HEIGHT);
         make.left.mas_equalTo(10*WIDTH);
         make.size.mas_equalTo(CGSizeMake(35*WIDTH, 35*HEIGHT));
     }];
     backBtn.backgroundColor = [UIColor whiteColor];
-    [backBtn setImage:[UIImage imageNamed:@"denglushanchu.png"] forState:UIControlStateNormal];
+    [backBtn setImage:[UIImage imageNamed:@"guanbi.png"] forState:UIControlStateNormal];
     [backBtn addTarget:self action:@selector(backBtnAction:) forControlEvents:UIControlEventTouchUpInside];
     //监听输入框
     [self.phoneNum addTarget:self action:@selector(textFieldDidChange:)forControlEvents:UIControlEventEditingChanged];
@@ -287,6 +289,8 @@
     [wxLoginBtn setBackgroundImage:[UIImage imageNamed:@"weixin.png"] forState:UIControlStateNormal];
     wxLoginBtn.contentMode = UIViewContentModeScaleAspectFit;
     [wxLoginBtn addTarget:self action:@selector(weixinLoginAction:) forControlEvents:UIControlEventTouchUpInside];
+    //初始状态
+    isUp = NO;
 }
 - (void)weixinLoginAction:(UIButton *)sender{
     NSLog(@"微信登录");
@@ -311,7 +315,42 @@
     NSLog(@"立即登录");
     [self.phoneNum resignFirstResponder];
     [self.codeNum resignFirstResponder];
-     [[NSNotificationCenter defaultCenter]postNotificationName:@"backToUserView" object:nil userInfo:nil];
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"userName":self.phoneNum.text, @"loginType":@"2", @"smsCode" : self.codeNum.text}];
+    NSLog(@"params = %@", params);
+   [GJAFNetWork POST:URL_ALIANG params:params method:@"login" tpye:@"post" success:^(NSURLSessionDataTask *task, id responseObject) {
+       
+       NSLog(@"登录结果 = %@", responseObject);
+       NSLog(@"%@", responseObject[@"respMsg"]);
+       if ([responseObject[@"respCode"] isEqualToString:@"000000"]) {
+           NSDictionary *output = responseObject[@"output"];
+           NSLog(@"%@", output);
+           /**********************************保存用户信息********************************/
+           /*********************************************************************************/
+           [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"GJ_isLogin"];
+           [[NSUserDefaults standardUserDefaults]setObject:output[@"userId"] forKey:@"GJ_userId"];
+           [[NSUserDefaults standardUserDefaults]setObject:output[@"sessionId"] forKey:@"GJ_sessionId"];
+           [[NSUserDefaults standardUserDefaults]setObject:output[@"mobile"] forKey:@"GJ_mobile"];
+           BOOL isBClient = [output[@"isBClient"] isEqualToString:@"ture"] ? YES : NO;
+           [[NSUserDefaults standardUserDefaults]setBool:isBClient forKey:@"GJ_isBClient"];
+           [[NSUserDefaults standardUserDefaults]setObject:output[@"userName"] forKey:@"GJ_userName"];
+           [[NSUserDefaults standardUserDefaults]setObject:output[@"realName"] forKey:@"GJ_realName"];
+           [[NSUserDefaults standardUserDefaults]setObject:output[@"nickName"] forKey:@"GJ_nickName"];
+           [[NSUserDefaults standardUserDefaults]setObject:output[@"logo"] forKey:@"GJ_headURL"];
+           NSString *gender = [output[@"gender"] isEqualToString:@"0"] ? @"男" : @"女";
+           [[NSUserDefaults standardUserDefaults]setObject:gender forKey:@"GJ_gender"];
+           [[NSUserDefaults standardUserDefaults]setObject:output[@"email"] forKey:@"GJ_email"];
+           [[NSUserDefaults standardUserDefaults]setObject:output[@"loginPwd"] forKey:@"GJ_loginType"];
+           [[NSUserDefaults standardUserDefaults]setObject:output[@"paymentPwd"] forKey:@"GJ_paymentPwd"];
+           [[NSUserDefaults standardUserDefaults]synchronize];
+           /*********************************************************************************/
+           /*********************************************************************************/
+           [[NSNotificationCenter defaultCenter]postNotificationName:@"resetData" object:nil];
+           [[NSNotificationCenter defaultCenter]postNotificationName:@"backToUserView" object:nil userInfo:nil];//返回用户界面
+       }
+   } fail:^(NSURLSessionDataTask *task, NSError *error) {
+       NSLog(@"%@", error);
+   }];
 }
 //注册
 - (void)signUpAction:(UIButton *)sender{
@@ -326,12 +365,45 @@
 //获取验证码
 - (void)agreementAction{
     NSLog(@"获取验证码");
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"codeType":@"1", @"mobile":self.phoneNum.text, @"bizType":@"11"}];
 
+    [GJAFNetWork POST:URL_ALIANG params:params method:@"getVerifyCode" tpye:@"post" success:^(NSURLSessionDataTask *task, id responseObject) {
+        NSLog(@"成功%@", responseObject);
+               NSLog(@"%@", responseObject[@"respMsg"]);
+        
+    } fail:^(NSURLSessionDataTask *task, NSError *error) {
+        
+        NSLog(@"错误%@", error);
+    }];
+    
     self.codeBtn.userInteractionEnabled = NO;
      [self.codeBtn setTitleColor:LYColor_A5 forState:UIControlStateNormal];
     [self.codeNum becomeFirstResponder];
     [self.myTimer fire];
 }
+- (NSString*)dictionaryToJson:(NSDictionary *)dic
+
+{
+    
+    NSError *parseError = nil;
+    
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic options:kNilOptions error:&parseError];
+    
+    return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    
+}
+- (NSString*) md5HexDigest:(NSString*)string
+{
+    const char *original_str = [string UTF8String];
+    unsigned char result[CC_MD5_DIGEST_LENGTH];
+    CC_MD5(original_str, (CC_LONG)strlen(original_str), result);
+    NSMutableString *hash = [NSMutableString string];
+    for (int i = 0; i < 16; i++){
+        [hash appendFormat:@"%02X", result[i]];
+    }
+    return [hash lowercaseString];
+}
+
 //btn点击事件
 - (void)agreebtnAction:(UIButton *)sender{
     sender.selected = !sender.selected;
@@ -375,30 +447,36 @@
 
 
 - (void)changeToSmall{
-    [UIView animateWithDuration:0.3 animations:^{
-        self.logoIMGView.frame = CGRectMake(0, 0, 25*WIDTH, 25*HEIGHT);
-        self.logoIMGView.center = CGPointMake(375/2*WIDTH, 72.5*HEIGHT);
-        self.logoIMGView.transform = CGAffineTransformMakeRotation(M_PI);
-        
-        [self.titleIMGView mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(self.logoIMGView.mas_bottom).with.offset(4*HEIGHT);
-            make.size.mas_equalTo(CGSizeMake(25*WIDTH, 11*HEIGHT));
+    if (!isUp) {
+        [UIView animateWithDuration:0.3 animations:^{
+            self.logoIMGView.frame = CGRectMake(0, 0, 25*WIDTH, 25*HEIGHT);
+            self.logoIMGView.center = CGPointMake(375/2*WIDTH, 72.5*HEIGHT);
+            self.logoIMGView.transform = CGAffineTransformMakeRotation(M_PI);
+            
+            [self.titleIMGView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.top.mas_equalTo(self.logoIMGView.mas_bottom).with.offset(4*HEIGHT);
+                make.size.mas_equalTo(CGSizeMake(25*WIDTH, 11*HEIGHT));
+            }];
+            [self layoutIfNeeded];
         }];
-        [self layoutIfNeeded];
-    }];
+        isUp = YES;
+    }
 }
 - (void)changeToBig{
-    [UIView animateWithDuration:0.3 animations:^{
-        self.logoIMGView.frame = CGRectMake(0, 0, 78*WIDTH, 78*HEIGHT);
-        self.logoIMGView.center = CGPointMake(375/2*WIDTH, 120*HEIGHT);
-        self.logoIMGView.transform = CGAffineTransformMakeRotation(0);
-        
-        [self.titleIMGView mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(self.logoIMGView.mas_bottom).with.offset(11*HEIGHT);
-            make.size.mas_equalTo(CGSizeMake(77*WIDTH, 34*HEIGHT));
+    if (isUp) {
+        [UIView animateWithDuration:0.3 animations:^{
+            self.logoIMGView.frame = CGRectMake(0, 0, 78*WIDTH, 78*HEIGHT);
+            self.logoIMGView.center = CGPointMake(375/2*WIDTH, 120*HEIGHT);
+            self.logoIMGView.transform = CGAffineTransformMakeRotation(0);
+            
+            [self.titleIMGView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.top.mas_equalTo(self.logoIMGView.mas_bottom).with.offset(11*HEIGHT);
+                make.size.mas_equalTo(CGSizeMake(77*WIDTH, 34*HEIGHT));
+            }];
+            [self layoutIfNeeded];
         }];
-        [self layoutIfNeeded];
-    }];
+        isUp = NO;
+    }
 
 }
 //返回按钮
@@ -409,7 +487,6 @@
 - (void)countDown{
     if (self.currentcountDown >0) {
         //设置界面的按钮显示 根据自己需求设置
-        NSLog(@"%ld", (long)self.currentcountDown);
         self.currentcountDown -= 1;
         [self.codeBtn setTitle:[NSString stringWithFormat:@"%ld秒", (long)self.currentcountDown] forState:UIControlStateNormal];
     }else{

@@ -12,13 +12,13 @@
 
 @property (nonatomic, strong, nonnull)UIImageView *logoIMGView;
 @property (nonatomic, strong, nonnull)UIImageView *titleIMGView;
-@property (nonatomic, strong)UIView *backgroundView;
+@property (nonatomic, strong, nonnull)UIView *backgroundView;
 @property (nonatomic, strong, nonnull)UITextField *phoneNum;
 @property (nonatomic, strong, nonnull)UITextField *codeNum;
 @property (nonatomic, strong, nonnull)UIButton *btn;
 @property (nonatomic, strong, nonnull)UIButton *codeBtn;
 @property (nonatomic, strong, nonnull)UIButton *loginBtn;
-@property (nonatomic, strong)NSTimer *myTimer;
+@property (nonatomic, strong, nonnull)NSTimer *myTimer;
 @property (nonatomic, assign)NSInteger currentcountDown;
 //@property (nonatomic, strong, nonnull)UILabel *timeLabel;
 - (instancetype)init;

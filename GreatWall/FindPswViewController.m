@@ -17,6 +17,7 @@
 @property (nonatomic, strong)NSTimer *myTimer;
 @property (nonatomic, assign)NSInteger currentcountDown;
 @property (nonatomic, strong, nonnull)UIButton *nextBtn;
+
 @end
 
 @implementation FindPswViewController
@@ -37,6 +38,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.currentcountDown = 60;
+    self.view.backgroundColor = [UIColor whiteColor];
     //返回按钮
     UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.view addSubview:backBtn];
@@ -192,10 +194,34 @@
     [self.phoneNum resignFirstResponder];
 }
 - (void)nextAction:(UIButton *)sender{
-    [self.navigationController pushViewController:[[ResetPswViewController alloc]init] animated:YES];
+//    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"codeType":@"1", @"mobile":self.phoneNum.text, @"bizType":@"12"}];
+//    
+//    [GJAFNetWork POST:URL_TEST params:params method:@"getVerifyCode" tpye:@"post" success:^(NSURLSessionDataTask *task, id responseObject) {
+//        NSLog(@"成功%@", responseObject);
+//        NSLog(@"%@", responseObject[@"respMsg"]);
+//        
+//    } fail:^(NSURLSessionDataTask *task, NSError *error) {
+//        
+//        
+//    }];
+    ResetPswViewController *resetPswVC = [[ResetPswViewController alloc]init];
+    resetPswVC.smsCode = self.codeNum.text;
+    resetPswVC.phoneStr = self.phoneNum.text;
+    [self.navigationController pushViewController:resetPswVC animated:YES];
 }
 - (void)agreementAction{
     NSLog(@"获取验证码");
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"codeType":@"1", @"mobile":self.phoneNum.text, @"bizType":@"12"}];
+    
+    [GJAFNetWork POST:URL_ALIANG params:params method:@"getVerifyCode" tpye:@"post" success:^(NSURLSessionDataTask *task, id responseObject) {
+        NSLog(@"成功%@", responseObject);
+        NSLog(@"%@", responseObject[@"respMsg"]);
+        
+    } fail:^(NSURLSessionDataTask *task, NSError *error) {
+        
+        
+    }];
+
     [self.codeBtn setTitleColor:LYColor_A5 forState:UIControlStateNormal];
     [self.codeNum becomeFirstResponder];
     self.codeBtn.userInteractionEnabled = NO;

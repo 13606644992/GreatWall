@@ -8,6 +8,7 @@
 
 #import "AddViewController.h"
 #import "Header.h"
+#import "Address.h"
 @interface AddViewController ()
 
 @end
@@ -18,9 +19,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.navigationItem.title = @"新建收货人";
-    [self.navigationController.navigationBar setTitleTextAttributes:@{UITextAttributeTextColor : LYColor_A1}];//修改字体颜色
-    [self.navigationController.navigationBar setTintColor:LYColor_A1];//返回按钮颜色
+    self.navigationController.navigationBar.titleTextAttributes=@{NSForegroundColorAttributeName:LYColor_A1};//导航栏文字颜色及大小
     self.view.backgroundColor = LYColor_A7;
+    self.navigationController.navigationBar.translucent = NO;
     [self creatSubview];
 }
 -(void)viewWillAppear:(BOOL)animated
@@ -154,8 +155,8 @@
         make.size.mas_equalTo(CGSizeMake(40*WIDTH, 24*HEIGHT));
     }];
     [self.morenBtn addTarget:self action:@selector(setToMoren:) forControlEvents:UIControlEventTouchUpInside];
-    [self.morenBtn setImage:[UIImage imageNamed:@"off.png"] forState:UIControlStateNormal];
-//    self.morenBtn.selected = NO;
+    UIImage *image = self.morenBtn.isSelected ? [UIImage imageNamed:@"on.png"] : [UIImage imageNamed:@"off.png"];
+    [self.morenBtn setImage:image forState:UIControlStateNormal];
     //保存按钮
     UIButton *saveBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     saveBtn.backgroundColor = LYColor_A1;
@@ -168,6 +169,11 @@
     saveBtn.layer.cornerRadius = 4.0f;
     [saveBtn setTitle:@"保存" forState:UIControlStateNormal];
     [saveBtn setTitleColor:[UIColor grayColor] forState:UIControlStateHighlighted];
+    if (self.isEdit) {
+       [saveBtn addTarget:self action:@selector(saveBtnEditAction:) forControlEvents:UIControlEventTouchUpInside];
+    }else{
+       [saveBtn addTarget:self action:@selector(saveBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+    }
 }
 - (void)setToMoren:(UIButton *)sender{
     sender.selected = !sender.selected;
@@ -179,11 +185,47 @@
      [self.numTextField resignFirstResponder];
      [self.postalTextField resignFirstResponder];
      [self.addressTextField resignFirstResponder];
-    
+    NSLog(@"选择地址");
+    Address *address = [[Address alloc]init];
+    self.definesPresentationContext = YES; //self is presenting view controller
+    address.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:.4];
+    address.modalPresentationStyle = UIModalPresentationOverFullScreen;
+    [self presentViewController:address animated:YES completion:nil];
     return NO;
 }
 
+- (void)saveBtnAction:(UIButton *)sender{
 
+    if (![self.nameTextField.text isEqualToString:@""] && ![self.numTextField.text isEqualToString:@""] && ![self.postalTextField.text isEqualToString:@""] && ![self.addressTextField.text isEqualToString:@""]) {
+        NSString *defaultFlag = self.morenBtn.isSelected ? @"1" : @"0"; // 是否为默认
+        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"userId" : [[NSUserDefaults standardUserDefaults]objectForKey:@"GJ_userId"], @"cneeName": self.nameTextField.text, @"mobile" : self.numTextField.text, @"zipCode" : self.postalTextField.text, @"address" : self.addressTextField.text, @"syncUser" : @"1", @"defaultFlag" : defaultFlag, @"areaId" : @"330382"}];
+        [GJAFNetWork POST:URL_ALIANG params:params method:@"addConsignee" tpye:@"post" success:^(NSURLSessionDataTask *task, id responseObject) {
+            NSLog(@"新增收货人：%@", responseObject);
+            NSLog(@"%@", responseObject[@"respMsg"]);
+            if ([responseObject[@"respCode"] isEqualToString:@"000000"]) {
+                [self.navigationController popViewControllerAnimated:YES];
+            }
+        } fail:^(NSURLSessionDataTask *task, NSError *error) {
+            NSLog(@"错误：%@", error);
+        }];
+    }
+}
+- (void)saveBtnEditAction:(UIButton *)sender{
+    if (![self.nameTextField.text isEqualToString:@""] && ![self.numTextField.text isEqualToString:@""] && ![self.postalTextField.text isEqualToString:@""] && ![self.addressTextField.text isEqualToString:@""]) {
+        NSString *defaultFlag = self.morenBtn.isSelected ? @"1" : @"0"; // 是否为默认
+        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"userId" : [[NSUserDefaults standardUserDefaults]objectForKey:@"GJ_userId"], @"cneeName": self.nameTextField.text, @"mobile" : self.numTextField.text, @"zipCode" : self.postalTextField.text, @"address" : self.addressTextField.text, @"syncUser" : @"1", @"defaultFlag" : defaultFlag, @"areaId" : @"330382", @"cneeId" : self.cneeId}];
+        [GJAFNetWork POST:URL_ALIANG params:params method:@"updateConsignee" tpye:@"post" success:^(NSURLSessionDataTask *task, id responseObject) {
+            NSLog(@"修改收货人：%@", responseObject);
+            NSLog(@"%@", responseObject[@"respMsg"]);
+            if ([responseObject[@"respCode"] isEqualToString:@"000000"]) {
+                [self.navigationController popViewControllerAnimated:YES];
+            }
+        } fail:^(NSURLSessionDataTask *task, NSError *error) {
+            NSLog(@"错误：%@", error);
+        }];
+    }
+
+}
 - (void)selectBtnAction:(UIButton *)sender{
     NSLog(@"1");
     // 1.创建选择联系人的控制器
@@ -225,6 +267,8 @@
     CNLabeledValue *labeledValue = phoneNums[0];
     CNPhoneNumber *phoneNumer = labeledValue.value;
     NSString *phoneNumber = phoneNumer.stringValue;
+    phoneNumber = [phoneNumber stringByReplacingOccurrencesOfString:@"-" withString:@""];
+    phoneNumber = [phoneNumber stringByReplacingOccurrencesOfString:@"+86 " withString:@""];
     self.numTextField.text = phoneNumber;
 }
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{

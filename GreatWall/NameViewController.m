@@ -17,11 +17,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.view.backgroundColor = LYColor_A7;
     
     self.navigationItem.title = @"编辑昵称";
-    [self.navigationController.navigationBar setTitleTextAttributes:@{UITextAttributeTextColor : LYColor_A1}];//修改字体颜色
-    [self.navigationController.navigationBar setTintColor:LYColor_A1];//返回按钮颜色
+    self.navigationController.navigationBar.titleTextAttributes=@{NSForegroundColorAttributeName:LYColor_A1};//导航栏文字颜色及大小
     //保存按钮
 //    UIBarButtonItem *rightBtn = [[UIBarButtonItem alloc]initWithTitle:@"保存" style:UIBarButtonItemStyleBordered target:self action:@selector(saveAction:)];
 //    rightBtn.tintColor = LYColor_A4;
@@ -62,8 +60,19 @@
     //弹出框
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"是否保存本次修改" preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:@"保存" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [[NSNotificationCenter defaultCenter]postNotificationName:@"changeName" object:nil userInfo:@{@"name" : self.nameField.text}];
-        [self.navigationController popViewControllerAnimated:YES];
+        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"userId":[[NSUserDefaults standardUserDefaults] objectForKey:@"GJ_userId"], @"nickName": self.nameField.text}];
+        NSLog(@"修改姓名%@", params);
+        [GJAFNetWork POST:URL_ALIANG params:params method:@"updateUserInfo" tpye:@"post" success:^(NSURLSessionDataTask *task, id responseObject) {
+            NSLog(@"成功%@", responseObject);
+            NSLog(@"%@", responseObject[@"respMsg"]);
+            [[NSUserDefaults standardUserDefaults]setObject:self.nameField.text forKey:@"GJ_nickName"];
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"resetData" object:nil];
+            [self.navigationController popViewControllerAnimated:YES];
+            
+        } fail:^(NSURLSessionDataTask *task, NSError *error) {
+            NSLog(@"%@", error);
+        }];
+        
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:@"不保存" style:UIAlertActionStyleDefault handler:nil]];
     [self presentViewController:alert animated:YES completion:nil];

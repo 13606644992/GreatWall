@@ -8,6 +8,6 @@
 
 #import "RootViewController.h"
 
-@interface AddressViewController : RootViewController
+@interface AddressViewController : RootViewController<UITableViewDelegate, UITableViewDataSource>
 
 @end

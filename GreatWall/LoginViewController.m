@@ -45,7 +45,14 @@
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(pushToSignUpVC) name:@"pushToSignUpVC" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(backToUserView) name:@"backToUserView" object:nil];
      [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(backBtnAction:) name:@"popBack" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(warningAction:) name:@"warning" object:nil];
     self.hidesBottomBarWhenPushed = YES;//隐藏tabbar，之后页面都要隐藏，故写在viewdidload里面。
+}
+//提示框
+- (void)warningAction:(NSNotification *)sender{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:sender.userInfo[@"respMsg"] preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 - (void)backBtnAction:(UIButton *)sender{
     [self dismissViewControllerAnimated:YES completion:nil];

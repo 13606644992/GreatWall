@@ -20,6 +20,7 @@
     return self;
 }
 - (void)creatSubview{
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
     self.selectedBackgroundView = [[UIView alloc] initWithFrame:self.contentView.frame];
     self.selectedBackgroundView.backgroundColor = LYColor_A7;
     self.contentView.backgroundColor = [UIColor whiteColor];
@@ -47,7 +48,7 @@
     [jiantouIMGView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(-18*WIDTH);
         make.centerY.mas_equalTo(self.contentView);
-        make.size.mas_equalTo(CGSizeMake(14*WIDTH, 14*HEIGHT));
+        make.size.mas_equalTo(CGSizeMake(5.5*WIDTH, 9.5*HEIGHT));
     }];
     jiantouIMGView.backgroundColor = [UIColor whiteColor];
     jiantouIMGView.contentMode = UIViewContentModeScaleAspectFit;
@@ -56,6 +57,7 @@
 - (void)setImgeWith:(UIImage *)image AndTitle:(NSString *)string{
     self.iconIMGView.image = image;
     self.titleLabel.text = string;
+    
 }
 - (void)addYaoqingAnKefu{
     if (self.tag == 3) {

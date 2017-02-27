@@ -9,5 +9,6 @@
 #import "RootViewController.h"
 
 @interface ResetPswViewController : RootViewController<UITextFieldDelegate>
-
+@property (nonatomic, copy)NSString *smsCode;
+@property (nonatomic, copy)NSString *phoneStr;
 @end

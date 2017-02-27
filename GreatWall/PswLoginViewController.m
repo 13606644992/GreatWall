@@ -22,7 +22,9 @@
 @end
 
 @implementation PswLoginViewController
-
+{
+    BOOL isUp;
+}
 - (void)viewWillAppear:(BOOL)animated{
     self.navigationController.navigationBarHidden = YES;//隐藏导航栏
     StatusBarBlack;
@@ -30,6 +32,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.view.backgroundColor = [UIColor whiteColor];
     //返回按钮
     UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.view addSubview:backBtn];
@@ -267,6 +270,8 @@
     //监听输入框
     [self.phoneNum addTarget:self action:@selector(textFieldDidChange:)forControlEvents:UIControlEventEditingChanged];
     [self.pswNum addTarget:self action:@selector(textFieldDidChange:)forControlEvents:UIControlEventEditingChanged];
+    //初始状态
+    isUp = NO;
 }
 - (void)textFieldDidChange:(UITextField *) TextField{
     if ((self.phoneNum.text.length == 11) && self.pswNum.text.length > 5 &&  self.pswNum.text.length < 21) {    // 小于20 大于6 位 密码
@@ -298,13 +303,50 @@
 
 - (void)loginAction:(UIButton *)sender{
     NSLog(@"登录");
-    [self.phoneNum resignFirstResponder];
+   [self.phoneNum resignFirstResponder];
     [self.pswNum resignFirstResponder];
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"GJ_isLogin"];
-    [[NSUserDefaults standardUserDefaults]synchronize];
-}
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"userName":self.phoneNum.text, @"loginType":@"1", @"loginPwd" : self.pswNum.text}];
+    NSLog(@"params = %@", params);
+    [GJAFNetWork POST:URL_ALIANG params:params method:@"login" tpye:@"post" success:^(NSURLSessionDataTask *task, id responseObject) {
+        
+        NSLog(@"结果 = %@", responseObject);
+        NSLog(@"%@", responseObject[@"respMsg"]);
+        if ([responseObject[@"respCode"] isEqualToString:@"000000"]) {
+            NSDictionary *output = responseObject[@"output"];
+            
+            /**********************************保存用户信息********************************/
+            /*********************************************************************************/
+            [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"GJ_isLogin"];
+            [[NSUserDefaults standardUserDefaults]setObject:output[@"userId"] forKey:@"GJ_userId"];
+            [[NSUserDefaults standardUserDefaults]setObject:output[@"sessionId"] forKey:@"GJ_sessionId"];
+            [[NSUserDefaults standardUserDefaults]setObject:output[@"mobile"] forKey:@"GJ_mobile"];
+            BOOL isBClient = [output[@"isBClient"] isEqualToString:@"ture"] ? YES : NO;
+            [[NSUserDefaults standardUserDefaults]setBool:isBClient forKey:@"GJ_isBClient"];
+            [[NSUserDefaults standardUserDefaults]setObject:output[@"userName"] forKey:@"GJ_userName"];
+            [[NSUserDefaults standardUserDefaults]setObject:output[@"realName"] forKey:@"GJ_realName"];
+            [[NSUserDefaults standardUserDefaults]setObject:output[@"logo"] forKey:@"GJ_headURL"];
+            [[NSUserDefaults standardUserDefaults]synchronize];
+            /*********************************************************************************/
+            /*********************************************************************************/
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"resetData" object:nil];
+            [self dismissViewControllerAnimated:YES completion:nil]; // dismiss登录界面
+            
+            //获取用户信息
+//            NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"userId":[[NSUserDefaults standardUserDefaults] objectForKey:@"GJ_userId"]}];
+//            NSLog(@"params = %@", params);
+//            [GJAFNetWork POST:URL_ALIANG params:params method:@"getUserInfo" tpye:@"post" success:^(NSURLSessionDataTask *task, id responseObject) {
+//                NSLog(@"用户信息 = %@", responseObject);
+//                NSLog(@"%@", responseObject[@"respMsg"]);
+//            } fail:^(NSURLSessionDataTask *task, NSError *error) {
+//                NSLog(@"%@", error);
+//            }];
+        }
+    } fail:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@", error);
+    }];
 
+}
+				
 - (void)messageAction:(UIButton *)sender{
     NSLog(@"短信登录");
     [self.navigationController popViewControllerAnimated:YES];
@@ -337,31 +379,36 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 - (void)changeToSmall{
-    [UIView animateWithDuration:0.3 animations:^{
-        self.logoIMGView.frame = CGRectMake(0, 0, 25*WIDTH, 25*HEIGHT);
-        self.logoIMGView.center = CGPointMake(375/2*WIDTH, 72.5*HEIGHT);
-        self.logoIMGView.transform = CGAffineTransformMakeRotation(M_PI);
-        
-        [self.titleIMGView mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(self.logoIMGView.mas_bottom).with.offset(4*HEIGHT);
-            make.size.mas_equalTo(CGSizeMake(25*WIDTH, 11*HEIGHT));
+    if (!isUp) {
+        [UIView animateWithDuration:0.3 animations:^{
+            self.logoIMGView.frame = CGRectMake(0, 0, 25*WIDTH, 25*HEIGHT);
+            self.logoIMGView.center = CGPointMake(375/2*WIDTH, 72.5*HEIGHT);
+            self.logoIMGView.transform = CGAffineTransformMakeRotation(M_PI);
+            
+            [self.titleIMGView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.top.mas_equalTo(self.logoIMGView.mas_bottom).with.offset(4*HEIGHT);
+                make.size.mas_equalTo(CGSizeMake(25*WIDTH, 11*HEIGHT));
+            }];
+            [self.view layoutIfNeeded];
         }];
-        [self.view layoutIfNeeded];
-    }];
+        isUp = YES;
+    }
 }
 - (void)changeToBig{
-    [UIView animateWithDuration:0.3 animations:^{
-        self.logoIMGView.frame = CGRectMake(0, 0, 78*WIDTH, 78*HEIGHT);
-        self.logoIMGView.center = CGPointMake(375/2*WIDTH, 120*HEIGHT);
-        self.logoIMGView.transform = CGAffineTransformMakeRotation(0);
-        
-        [self.titleIMGView mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(self.logoIMGView.mas_bottom).with.offset(11*HEIGHT);
-            make.size.mas_equalTo(CGSizeMake(77*WIDTH, 34*HEIGHT));
+    if (isUp) {
+        [UIView animateWithDuration:0.3 animations:^{
+            self.logoIMGView.frame = CGRectMake(0, 0, 78*WIDTH, 78*HEIGHT);
+            self.logoIMGView.center = CGPointMake(375/2*WIDTH, 120*HEIGHT);
+            self.logoIMGView.transform = CGAffineTransformMakeRotation(0);
+            
+            [self.titleIMGView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.top.mas_equalTo(self.logoIMGView.mas_bottom).with.offset(11*HEIGHT);
+                make.size.mas_equalTo(CGSizeMake(77*WIDTH, 34*HEIGHT));
+            }];
+            [self.view layoutIfNeeded];
         }];
-        [self.view layoutIfNeeded];
-
-    }];
+        isUp = NO;
+    }
     
 }
 //限制输入长度

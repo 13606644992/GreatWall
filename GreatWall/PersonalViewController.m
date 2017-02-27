@@ -12,29 +12,31 @@
 #import "NameViewController.h"
 #import "SexViewController.h"
 #import "AddressViewController.h"
+#import "EmailViewController.h"
+#import "RenZhengViewController.h"
+#import "ImageServers.h"
+#import "SecurityViewController.h"
 @interface PersonalViewController ()
 
 @property (nonatomic, strong)UIImageView *headerIMGView;
+@property (nonatomic, strong)ImageServers *imageServers;
 @end
 
 @implementation PersonalViewController
 - (void)viewWillAppear:(BOOL)animated{
-    self.navigationController.navigationBarHidden = NO;
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
     self.navigationController.navigationBar.translucent = NO;
+    self.navigationController.navigationBar.titleTextAttributes=@{NSForegroundColorAttributeName:LYColor_A1};//导航栏文字颜色及大小
+    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
     StatusBarBlack;
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.navigationItem.title = @"个人资料设置";
-    [self.navigationController.navigationBar setTitleTextAttributes:@{UITextAttributeTextColor : LYColor_A1}];//修改字体颜色
-    [self.navigationController.navigationBar setTintColor:LYColor_A1];//返回按钮颜色
-    self.view.backgroundColor = LYColor_A7;
     [self creatSubView];
 }
-- (void)creatSubView{
-    self.headerIMG = [UIImage imageNamed:@"head.jpg"];
-    
+- (void)creatSubView{    
     UIView *backgroundView = [[UIView alloc]init];
     [self.view addSubview:backgroundView];
     [backgroundView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -79,16 +81,15 @@
             }];
             self.headerIMGView.layer.masksToBounds = YES;
             self.headerIMGView.layer.cornerRadius = 22.0*WIDTH;
-            [self.headerIMGView setImage:self.headerIMG];
+            self.headerIMGView.image = self.headerIMG;
             self.headerIMGView.contentMode = UIViewContentModeScaleAspectFit;
-            self.headerIMGView.backgroundColor = [UIColor whiteColor];
+            self.headerIMGView.backgroundColor = LYColor_A1;
             self.headerIMGView.userInteractionEnabled = YES;
-            UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(getPhoto)];
-            [self.headerIMGView addGestureRecognizer:tapGesture];
+
         }else if (i == 3){
             title.text = @"昵称";
             [backgroundView addSubview:self.nameLabel];
-            self.nameLabel.text = @"泰森";
+            self.nameLabel.text = [[NSUserDefaults standardUserDefaults]objectForKey:@"GJ_nickName"];
             self.nameLabel.backgroundColor = [UIColor whiteColor];
             self.nameLabel.textAlignment = NSTextAlignmentRight;
             self.nameLabel.font = [UIFont systemFontOfSize:13 * WIDTH];
@@ -101,7 +102,7 @@
         }else if (i == 4){
             title.text = @"性别";
             [backgroundView addSubview:self.sexLabel];
-            self.sexLabel.text = @"男";
+            self.sexLabel.text = [[NSUserDefaults standardUserDefaults]objectForKey:@"GJ_gender"];
             self.sexLabel.backgroundColor = [UIColor whiteColor];
             self.sexLabel.textAlignment = NSTextAlignmentRight;
             self.sexLabel.font = [UIFont systemFontOfSize:13 * WIDTH];
@@ -115,7 +116,7 @@
         }else if (i == 5){
             title.text = @"手机号";
             [backgroundView addSubview:self.numberLabel];
-            NSString *phoneNum = @"18686570371";
+            NSString *phoneNum = [[NSUserDefaults standardUserDefaults]objectForKey:@"GJ_mobile"];
             NSString *string=[phoneNum stringByReplacingOccurrencesOfString:[phoneNum substringWithRange:NSMakeRange(3,4)]withString:@"****"];
             self.numberLabel.text = string;
             self.numberLabel.backgroundColor = [UIColor whiteColor];
@@ -130,7 +131,7 @@
         }else if (i == 6){
             title.text = @"邮箱";
             [backgroundView addSubview:self.emailLabel];
-            self.emailLabel.text = @"liguanjian@163.com";
+            self.emailLabel.text = [[NSUserDefaults standardUserDefaults]objectForKey:@"GJ_email"];
             self.emailLabel.backgroundColor = [UIColor whiteColor];
             self.emailLabel.textAlignment = NSTextAlignmentRight;
             self.emailLabel.font = [UIFont systemFontOfSize:13 * WIDTH];
@@ -144,16 +145,26 @@
         }else if (i == 7){
             title.text = @"地址管理";
         }
+        //箭头
+        UIImageView *jiantouIMG = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"jiantou.png"]];
+        jiantouIMG.contentMode = UIViewContentModeScaleAspectFit;
+        [backgroundView addSubview:jiantouIMG];
+        [jiantouIMG mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerY.mas_equalTo(title);
+            make.right.mas_equalTo(-18 * WIDTH);
+            make.size.mas_equalTo(CGSizeMake(5.5 * WIDTH, 9.5 * HEIGHT));
+        }];
         //按钮
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
         [backgroundView addSubview:btn];
         [btn mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.mas_equalTo(title);
             make.right.mas_equalTo(-5 * WIDTH);
-            make.size.mas_equalTo(CGSizeMake(25 * WIDTH, 25 * HEIGHT));
+            make.size.mas_equalTo(CGSizeMake(300 * WIDTH, 40 * HEIGHT));
         }];
-        btn.backgroundColor = [UIColor whiteColor];
-        [btn setImage:[UIImage imageNamed:@"jiantou.png"] forState:UIControlStateNormal];
+        btn.alpha = 0.5;
+//        btn.backgroundColor = [UIColor yellowColor];
+//        [btn setImage:[UIImage imageNamed:@"jiantou.png"] forState:UIControlStateNormal];
         btn.tag = i;
         btn.adjustsImageWhenHighlighted = NO;
         [btn addTarget:self action:@selector(btnAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -207,15 +218,25 @@
                make.centerY.mas_equalTo(line_foot.mas_top).with.offset(29*HEIGHT);
             }];
         }
+        //箭头
+        UIImageView *jiantouIMG = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"jiantou.png"]];
+        jiantouIMG.contentMode = UIViewContentModeScaleAspectFit;
+        [footView addSubview:jiantouIMG];
+        [jiantouIMG mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerY.mas_equalTo(title_foot);
+            make.right.mas_equalTo(-18 * WIDTH);
+            make.size.mas_equalTo(CGSizeMake(5.5 * WIDTH, 9.5 * HEIGHT));
+        }];
+
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
         [footView addSubview:btn];
         [btn mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.mas_equalTo(title_foot);
-            make.right.mas_equalTo(-10 * WIDTH);
-            make.size.mas_equalTo(CGSizeMake(25 * WIDTH, 25 * HEIGHT));
+            make.right.mas_equalTo(-5 * WIDTH);
+            make.size.mas_equalTo(CGSizeMake(300 * WIDTH, 40 * HEIGHT));
         }];
-        btn.backgroundColor = [UIColor whiteColor];
-        [btn setImage:[UIImage imageNamed:@"jiantou.png"] forState:UIControlStateNormal];
+//        btn.backgroundColor = [UIColor whiteColor];
+//        [btn setImage:[UIImage imageNamed:@"jiantou.png"] forState:UIControlStateNormal];
         btn.tag = i;
         btn.adjustsImageWhenHighlighted = NO;
         [btn addTarget:self action:@selector(btnAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -224,11 +245,17 @@
     self.pickerImage = [[UIImagePickerController alloc] init];
     
     //通知
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(changeName:) name:@"changeName" object:nil];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(changeSex:) name:@"changeSex" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(resetDateWithUserInfo) name:@"resetData" object:nil];
+    [self resetDateWithUserInfo];
 }
 
-
+- (void)resetDateWithUserInfo{
+    self.nameLabel.text = [[NSUserDefaults standardUserDefaults]objectForKey:@"GJ_nickName"];
+    self.sexLabel.text = [[NSUserDefaults standardUserDefaults]objectForKey:@"GJ_gender"];
+    self.emailLabel.text = [[NSUserDefaults standardUserDefaults]objectForKey:@"GJ_email"];
+    NSString *phoneNum = [[NSUserDefaults standardUserDefaults]objectForKey:@"GJ_mobile"];
+    self.numberLabel.text = [phoneNum stringByReplacingOccurrencesOfString:[phoneNum substringWithRange:NSMakeRange(3,4)]withString:@"****"];
+}
 
 
 
@@ -241,7 +268,28 @@
         [self pushToSexVC];
     }else if (sender.tag == 7){
         [self pushToAddressVC];
+    }else if (sender.tag == 0){
+        [self pushToRenZhengVC];
+    }else if (sender.tag == 6){
+        [self pushToEmailVC];
+    }else if (sender.tag == 1){
+        [self pushToSecurityVC];
     }
+}
+- (void)pushToSecurityVC{
+    SecurityViewController *securityVC = [[SecurityViewController alloc]init];
+    self.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:securityVC animated:YES];
+}
+- (void)pushToEmailVC{
+    EmailViewController *emailVC = [[EmailViewController alloc]init];
+    self.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:emailVC animated:YES];
+}
+- (void)pushToRenZhengVC{
+    RenZhengViewController *renzhengVC = [[RenZhengViewController alloc]init];
+    self.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:renzhengVC animated:YES];
 }
 - (void)pushToAddressVC{
     AddressViewController *addressVC = [[AddressViewController alloc]init];
@@ -254,12 +302,7 @@
     self.hidesBottomBarWhenPushed=YES;
     [self.navigationController pushViewController:sexVC animated:YES];
 }
-- (void)changeName:(NSNotification *)sender{
-    self.nameLabel.text = sender.userInfo[@"name"];
-}
-- (void)changeSex:(NSNotification *)sender{
-    self.sexLabel.text = sender.userInfo[@"sex"];
-}
+
 
 - (void)pushToNameVC{
     NameViewController *nameVC = [[NameViewController alloc]init];
@@ -289,13 +332,6 @@
         [self presentViewController:imagePickerController animated:YES completion:^{
         }];
 
-//        self.pickerImage.sourceType = UIImagePickerControllerSourceTypeCamera;
-//        self.pickerImage.mediaTypes = [UIImagePickerController availableMediaTypesForSourceType:self.pickerImage.sourceType];
-//        NSString *requiredMediaType = ( NSString *)kUTTypeImage;
-//        NSArray *arrMediaTypes=[NSArray arrayWithObjects:requiredMediaType,nil];
-//        [self.pickerImage setMediaTypes:arrMediaTypes];
-//        self.pickerImage.delegate = self;
-//        self.pickerImage.allowsEditing = YES;
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
     [self presentViewController:alert animated:YES completion:nil];
@@ -306,12 +342,11 @@
     NSLog(@"截取");
     UIImage *crop = [info objectForKey:UIImagePickerControllerEditedImage];//截取后的图片
     self.headerIMGView.image = crop;
+    [self.imageServers updateImage:crop]; //上传图片
+
     
     [[NSNotificationCenter defaultCenter]postNotificationName:@"changeHeadIMG" object:nil userInfo:@{@"headIMG" : crop}];
-    
-    [picker dismissViewControllerAnimated:YES completion:^{
-        
-    }];
+    [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)dealloc{
@@ -323,6 +358,7 @@
 - (UIImageView *)headerIMGView{
     if (!_headerIMGView) {
         _headerIMGView = [[UIImageView alloc]init];
+        _headerIMGView.image = self.headerIMG;
     }
     return _headerIMGView;
 }
@@ -355,6 +391,12 @@
         _renzhengLabel = [[UILabel alloc]init];
     }
     return _renzhengLabel;
+}
+- (ImageServers *)imageServers{
+    if (!_imageServers) {
+        _imageServers = [[ImageServers alloc]init];
+    }
+    return _imageServers;
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

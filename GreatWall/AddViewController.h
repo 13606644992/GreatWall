@@ -9,6 +9,7 @@
 #import "RootViewController.h"
 #import <Contacts/Contacts.h>
 #import <ContactsUI/ContactsUI.h>
+#import "GJModel.h"
 @interface AddViewController : RootViewController<CNContactPickerDelegate,UITextFieldDelegate>
 @property (nonatomic, strong)UITextField *nameTextField;
 @property (nonatomic, strong)UITextField *numTextField;
@@ -16,4 +17,7 @@
 @property (nonatomic, strong)UITextField *areaTextField;
 @property (nonatomic, strong)UITextField *addressTextField;
 @property (nonatomic, strong)UIButton *morenBtn;
+
+@property (nonatomic, assign)BOOL isEdit;
+@property (nonatomic, copy)NSString *cneeId;
 @end

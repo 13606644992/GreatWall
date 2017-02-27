@@ -40,6 +40,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.currentcountDown = 60;
+    self.view.backgroundColor = [UIColor whiteColor];
     //返回按钮
     self.backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.view addSubview:self.backBtn];
@@ -297,7 +298,6 @@
         [UIView animateWithDuration:0.5 animations:^{
             [self.backBtn mas_updateConstraints:^(MASConstraintMaker *make) {
                 make.top.mas_equalTo(33*HEIGHT);
-                
             }];
             [self.view layoutIfNeeded];
             self.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
@@ -325,20 +325,32 @@
 }
 - (void)signUpAction:(UIButton *)sender{
     NSLog(@"注册");
-    //循环，如果有的话就直接返回
-    for (UIViewController *controller in self.navigationController.viewControllers) {
-        if ([controller isKindOfClass:[PswLoginViewController class]]) {
-            PswLoginViewController *pswVC =(PswLoginViewController *)controller;
-            [self.navigationController popToViewController:pswVC animated:YES];
-            return; //返回之后直接return
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"userName":self.phoneNum.text, @"loginPwd":self.pswNum.text, @"smsCode":self.codeNum.text}];
+    
+    [GJAFNetWork POST:URL_ALIANG params:params method:@"regUser" tpye:@"post" success:^(NSURLSessionDataTask *task, id responseObject) {
+        NSLog(@"成功%@", responseObject);
+        NSLog(@"%@", responseObject[@"respMsg"]);
+        if ([responseObject[@"respCode"] isEqualToString:@"000000"]) {
+            //循环，如果有的话就直接返回
+            for (UIViewController *controller in self.navigationController.viewControllers) {
+                if ([controller isKindOfClass:[PswLoginViewController class]]) {
+                    PswLoginViewController *pswVC =(PswLoginViewController *)controller;
+                    [self.navigationController popToViewController:pswVC animated:YES];
+                    return; //返回之后直接return
+                }
+            }
+            //如果没有的话就加到controller数组里
+            PswLoginViewController *pswVC = [[PswLoginViewController alloc]init];
+            NSMutableArray *controllersArr = [NSMutableArray arrayWithArray:self.navigationController.viewControllers];
+            [controllersArr insertObject:pswVC atIndex:1];
+            self.navigationController.viewControllers = controllersArr;
+            [self.navigationController popViewControllerAnimated:YES];
         }
-    }
-    //如果没有的话就加到controller数组里
-    PswLoginViewController *pswVC = [[PswLoginViewController alloc]init];
-    NSMutableArray *controllersArr = [NSMutableArray arrayWithArray:self.navigationController.viewControllers];
-    [controllersArr insertObject:pswVC atIndex:1];
-    self.navigationController.viewControllers = controllersArr;
-    [self.navigationController popViewControllerAnimated:YES];
+    } fail:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@", error);
+        
+    }];
+
     
 }
 //btn点击事件
@@ -402,7 +414,16 @@
 }
 - (void)agreementAction{
     NSLog(@"获取验证码");
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"codeType":@"1", @"mobile":self.phoneNum.text, @"bizType":@"10"}];
     
+    [GJAFNetWork POST:URL_ALIANG params:params method:@"getVerifyCode" tpye:@"post" success:^(NSURLSessionDataTask *task, id responseObject) {
+        NSLog(@"成功%@", responseObject);
+        NSLog(@"%@", responseObject[@"respMsg"]);
+        
+    } fail:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@", error);
+    }];
+
     self.codeBtn.userInteractionEnabled = NO;
     [self.codeBtn setTitleColor:LYColor_A5 forState:UIControlStateNormal];
     [self.codeNum becomeFirstResponder];
@@ -412,7 +433,6 @@
 - (void)countDown{
     if (self.currentcountDown >0) {
         //设置界面的按钮显示 根据自己需求设置
-        NSLog(@"%ld", (long)self.currentcountDown);
         self.currentcountDown -= 1;
         [self.codeBtn setTitle:[NSString stringWithFormat:@"%ld秒", (long)self.currentcountDown] forState:UIControlStateNormal];
     }else{

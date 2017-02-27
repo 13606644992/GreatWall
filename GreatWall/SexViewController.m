@@ -21,8 +21,7 @@
     self.view.backgroundColor = LYColor_A7;
     
     self.navigationItem.title = @"性别";
-    [self.navigationController.navigationBar setTitleTextAttributes:@{UITextAttributeTextColor : LYColor_A1}];//修改字体颜色
-    [self.navigationController.navigationBar setTintColor:LYColor_A1];//返回按钮颜色
+    self.navigationController.navigationBar.titleTextAttributes=@{NSForegroundColorAttributeName:LYColor_A1};//导航栏文字颜色及大小
     UIButton *rightBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     rightBtn.titleLabel.font = [UIFont systemFontOfSize:14.0f];
     [rightBtn setTitle:@"保存" forState:UIControlStateNormal];
@@ -115,6 +114,20 @@
     //弹出框
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"是否保存本次修改" preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:@"保存" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        NSString *genderStr = [self.sexStr isEqualToString:@"男"] ? @"0" : @"1";
+        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"userId":[[NSUserDefaults standardUserDefaults] objectForKey:@"GJ_userId"], @"gender": genderStr}];
+        NSLog(@"修改姓名%@", params);
+        [GJAFNetWork POST:URL_ALIANG params:params method:@"updateUserInfo" tpye:@"post" success:^(NSURLSessionDataTask *task, id responseObject) {
+            NSLog(@"成功%@", responseObject);
+            NSLog(@"%@", responseObject[@"respMsg"]);
+            [[NSUserDefaults standardUserDefaults]setObject:self.sexStr forKey:@"GJ_gender"];
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"resetData" object:nil];
+            [self.navigationController popViewControllerAnimated:YES];
+            
+        } fail:^(NSURLSessionDataTask *task, NSError *error) {
+            NSLog(@"%@", error);
+        }];
+
         [[NSNotificationCenter defaultCenter]postNotificationName:@"changeSex" object:nil userInfo:@{@"sex": self.sexStr}];
         [self.navigationController popViewControllerAnimated:YES];
        

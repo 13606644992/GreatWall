@@ -23,6 +23,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.view.backgroundColor = [UIColor whiteColor];
     //返回按钮
     UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.view addSubview:backBtn];
@@ -132,6 +133,16 @@
     }
 }
 - (void)finishBtnAction:(UIButton *)sender{
+        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"mobile":self.phoneStr, @"newPwd":self.pswNum.text, @"resetType":@"2",@"smsCode":self.smsCode}];
+    
+        [GJAFNetWork POST:URL_ALIANG params:params method:@"forgetLoginPwd" tpye:@"post" success:^(NSURLSessionDataTask *task, id responseObject) {
+            NSLog(@"成功%@", responseObject);
+            NSLog(@"%@", responseObject[@"respMsg"]);
+    
+        } fail:^(NSURLSessionDataTask *task, NSError *error) {
+    
+            
+        }];
     for (UIViewController *controller in self.navigationController.viewControllers) {
         if ([controller isKindOfClass:[PswLoginViewController class]]) {
             PswLoginViewController *pswVC =(PswLoginViewController *)controller;
