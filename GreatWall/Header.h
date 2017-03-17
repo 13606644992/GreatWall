@@ -101,6 +101,8 @@
 
 //#define URL @"http://192.168.32.210:18080/seaway-ebao-api-server/api.do"
 #define URL_ALIANG @"http://192.168.32.95:8080/api/api.do"
+#define URL_ZHANGHAI @"http://192.168.32.185:8080//api.do"
+#define URL_KENAN @"http://192.168.32.68:8082/api/api.do"
 
 
 #pragma mark   -----------------LYColor------------------
