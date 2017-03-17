@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Header.h"
 
 @interface ApplicantCell : UITableViewCell
 
+@property (nonatomic ,strong) UILabel *titleLab;
+@property (nonatomic ,strong) UITextField *detailTF;
+@property (nonatomic ,strong) UIButton *personButton;
+
++ (instancetype)cellWithTableView:(UITableView *)tableView;
 @end

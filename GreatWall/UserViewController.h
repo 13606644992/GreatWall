@@ -9,5 +9,6 @@
 #import "RootViewController.h"
 
 @interface UserViewController : RootViewController<UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource>
+@property (nonatomic ,strong) NSString *result;
 
 @end

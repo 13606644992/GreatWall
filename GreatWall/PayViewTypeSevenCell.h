@@ -7,7 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Header.h"
 
 @interface PayViewTypeSevenCell : UITableViewCell
 
+@property (nonatomic ,strong) UILabel *titleLab;
+@property (nonatomic ,strong) UIButton *selectBtn;
+
++ (instancetype)cellWithPayViewTypeSevenTableView:(UITableView *)tableView;
 @end

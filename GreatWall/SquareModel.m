@@ -9,5 +9,14 @@
 #import "SquareModel.h"
 
 @implementation SquareModel
+-(void)setValue:(id)value forUndefinedKey:(NSString *)key{
+    
+}
+@end
+@implementation SquareSpecial
+
+-(void)setValue:(id)value forUndefinedKey:(NSString *)key{
+    
+}
 
 @end

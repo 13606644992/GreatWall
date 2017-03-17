@@ -329,10 +329,18 @@
            /*********************************************************************************/
            [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"GJ_isLogin"];
            [[NSUserDefaults standardUserDefaults]setObject:output[@"userId"] forKey:@"GJ_userId"];
+          
+
            [[NSUserDefaults standardUserDefaults]setObject:output[@"sessionId"] forKey:@"GJ_sessionId"];
            [[NSUserDefaults standardUserDefaults]setObject:output[@"mobile"] forKey:@"GJ_mobile"];
-           BOOL isBClient = [output[@"isBClient"] isEqualToString:@"ture"] ? YES : NO;
-           [[NSUserDefaults standardUserDefaults]setBool:isBClient forKey:@"GJ_isBClient"];
+//           NSString *isBClient = [output[@"isBClient"] isEqualToString:@"true"] ? @"1" : @"0";
+//           NSLog(@"-isBClient-------%@-",output[@"isBClient"]);
+           if ([output[@"isBClient"] isEqualToString:@"true"]) {
+               [[NSUserDefaults standardUserDefaults]setObject:@"1" forKey:@"GJ_isBClient"];
+           }else{
+               [[NSUserDefaults standardUserDefaults]setObject:@"0" forKey:@"GJ_isBClient"];
+           }
+
            [[NSUserDefaults standardUserDefaults]setObject:output[@"userName"] forKey:@"GJ_userName"];
            [[NSUserDefaults standardUserDefaults]setObject:output[@"realName"] forKey:@"GJ_realName"];
            [[NSUserDefaults standardUserDefaults]setObject:output[@"nickName"] forKey:@"GJ_nickName"];

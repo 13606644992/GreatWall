@@ -7,7 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Header.h"
 
 @interface RealPayCell : UITableViewCell
+@property (nonatomic ,strong)PayTrade *trade;
+
+@property (nonatomic ,strong) UILabel *titleLab;
+@property (nonatomic ,strong) UILabel *amountLab;
+
++ (instancetype)cellWithTheRealPayTableView:(UITableView *)tableView;
 
 @end

@@ -88,6 +88,7 @@
     
     [calendar setFirstWeekday:2];//设定周一为周首日
     BOOL ok = [calendar rangeOfUnit:NSMonthCalendarUnit startDate:&beginDate interval:&interval forDate:newDate];
+    
     //分别修改为 NSDayCalendarUnit NSWeekCalendarUnit NSYearCalendarUnit
     if (ok) {
         endDate = [beginDate dateByAddingTimeInterval:interval-1];

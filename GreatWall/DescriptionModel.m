@@ -10,4 +10,43 @@
 
 @implementation DescriptionModel
 
+-(void)setValue:(id)value forUndefinedKey:(NSString *)key{
+    
+}
+
+@end
+@implementation DescriptionPrice
+
+
+-(void)setValue:(id)value forUndefinedKey:(NSString *)key{
+    
+}
+@end
+@implementation DescriptionPlan
+
+-(void)setValue:(id)value forUndefinedKey:(NSString *)key{
+    
+}
+
+@end
+@implementation DescriptionBenefit
+
+-(void)setValue:(id)value forUndefinedKey:(NSString *)key{
+    
+}
+@end
+
+@implementation DescriptionBenefitList
+
+-(void)setValue:(id)value forUndefinedKey:(NSString *)key{
+    
+}
+
+@end
+@implementation DescriptionName
+-(void)setValue:(id)value forUndefinedKey:(NSString *)key{
+    
+}
+
+
 @end

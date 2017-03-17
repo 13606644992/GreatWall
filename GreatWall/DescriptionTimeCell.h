@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Header.h"
 
 @interface DescriptionTimeCell : UITableViewCell
+
+@property (nonatomic ,strong) UILabel *titleLab;
+@property (nonatomic ,strong) UILabel *detialLab;
+
++ (instancetype)cellWithTimeTableView:(UITableView *)tableView;
 
 @end

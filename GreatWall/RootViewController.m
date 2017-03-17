@@ -7,6 +7,7 @@
 //
 
 #import "RootViewController.h"
+#import "Header.h"
 
 @interface RootViewController ()
 
@@ -21,15 +22,26 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.view.backgroundColor = [UIColor whiteColor];
-    [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(0, -60)
-                                                         forBarMetrics:UIBarMetricsDefault];
-}
+    self.view.backgroundColor = LYColor_A7;
+//    [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(0, -60)
+//                                                         forBarMetrics:UIBarMetricsDefault];
+    self.rootBackBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.rootBackBtn.frame = CGRectMake(0, 0, 10, 17.5);
+    [self.rootBackBtn setImage:[UIImage imageNamed:@"jiantou-lv.png"] forState:UIControlStateNormal];
+    [self.rootBackBtn addTarget:self action:@selector(doBack:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView: self.rootBackBtn];
+    self.navigationItem.leftBarButtonItem = backItem;
 
+}
+-(void)doBack:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-    self.view.backgroundColor = [UIColor whiteColor];
+//    self.view.backgroundColor = [UIColor whiteColor];
 }
 
 /*

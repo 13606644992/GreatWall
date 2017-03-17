@@ -22,6 +22,8 @@
 }
 -(void)initMallCellAnyThingWith
 {
+    //    底部虚线
+    [self.contentView addSubview:self.lineView];
     [self.contentView addSubview:self.titleImg];
     [self.titleImg mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.contentView).with.offset(13*HEIGHT);
@@ -49,36 +51,53 @@
         make.right.equalTo(self.titleLab);
         make.height.equalTo(@(11*HEIGHT));
     }];
-    [self.contentView addSubview:self.borderView];
-    [self.borderView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.titleLab);
-        make.top.mas_equalTo(self.areaLab.mas_bottom).with.offset(13*HEIGHT);
-        make.width.equalTo(@(80*WEIGHT));
-        make.height.equalTo(@(24*HEIGHT));
-    }];
+
     [self.contentView addSubview:self.brandLab];
     [self.brandLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(self.borderView);
-        make.size.mas_equalTo(CGSizeMake(56*HEIGHT, 16*HEIGHT));
+        make.bottom.equalTo(self.titleImg).with.offset(-9*HEIGHT);
+        make.centerX.equalTo(self.titleImg);
+        make.size.mas_equalTo(CGSizeMake(85*WIDTH, 18*HEIGHT));
     }];
     [self.contentView addSubview:self.countLab];
     [self.countLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.areaLab.mas_bottom).with.offset(14*HEIGHT);
+        make.left.mas_equalTo(self.titleLab);
         make.right.mas_equalTo(self.contentView.mas_right).with.offset(-13*WEIGHT);
-        make.centerY.mas_equalTo(self.borderView.mas_centerY);
         make.height.equalTo(@(12*HEIGHT));
     }];
+    //    返现背景图
+    [self.contentView addSubview:self.fanImg];
+    [self.fanImg mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.areaLab.mas_bottom).with.offset(14*HEIGHT);
+        make.left.mas_equalTo(self.titleLab);
+        make.height.equalTo(@(16*HEIGHT));
+        make.width.equalTo(@(96*WEIGHT));
+    }];
+    //    返现金额比例
+    [self.contentView addSubview:self.fanLab];
+    [self.fanLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self.fanImg);
+        make.size.mas_equalTo(CGSizeMake(80*WEIGHT, 11*HEIGHT));
+    }];
  }
--(void)setModel:(MallModel *)model
+-(void)setModel:(MallProduct *)model
 {
-    CGRect tempRectBrand = [self.brandLab.text   boundingRectWithSize:CGSizeMake(ScreenWindowWidth-220,11*HEIGHT)options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:11*WEIGHT]}context:nil];
-    [self.borderView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.size.mas_equalTo(CGSizeMake(tempRectBrand.size.width+28*WEIGHT, 24*HEIGHT));
-    }];
-    [self.brandLab mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.size.mas_equalTo(CGSizeMake(tempRectBrand.size.width+22*WEIGHT, 18*HEIGHT));
-    }];
-    [self layoutIfNeeded];
     
+    if ([IS_Bclient integerValue] == 1) {
+        self.fanLab.hidden = NO;
+        self.fanImg.hidden = NO;
+        self.countLab.hidden = YES;
+    }else{
+        self.fanLab.hidden = YES;
+        self.fanImg.hidden = YES;
+        self.countLab.hidden = NO;
+    }
+    self.titleLab.text = model.productName;
+    [self.titleImg sd_setImageWithURL:[NSURL URLWithString:model.productLogo] placeholderImage:PlaceImage];
+    self.brandLab.text = model.insurerName;
+    self.countLab.text = [NSString stringWithFormat:@"销量 %@份",model.totalAmount];
+    self.carTypeLab.text = [NSString stringWithFormat:@"保险业务：%@",model.businessDesc];
+    self.areaLab.text = [NSString stringWithFormat:@"承保地区：%@",model.areaDesc];
 }
 #pragma mark  -----Controller-------------
 -(UIImageView *)titleImg
@@ -93,7 +112,6 @@
     if (!_titleLab) {
         _titleLab = [[UILabel alloc] init];
         _titleLab.textColor = LYColor_A3;
-        //        _titleLab.backgroundColor = [UIColor redColor];
         _titleLab.font = [UIFont systemFontOfSize:16*WEIGHT];
         _titleLab.text = @"平安车险";
     }
@@ -105,7 +123,7 @@
         _carTypeLab = [[UILabel alloc] init];
         _carTypeLab.textColor = LYColor_A4;
         _carTypeLab.font = [UIFont systemFontOfSize:11*WEIGHT];
-        _carTypeLab.text = @"承包车辆：9座以下非营运客车";
+        _carTypeLab.text = @"保险业务：9座以下非营运客车";
     }
     return _carTypeLab;
 }
@@ -119,28 +137,17 @@
     }
     return _areaLab;
 }
--(UIView *)borderView
-{
-    if (!_borderView) {
-        _borderView = [[UIView alloc] init];
-        _borderView.backgroundColor = [UIColor clearColor];
-        _borderView.layer.borderWidth = 1.0f;
-        _borderView.layer.borderColor = UIColorRGBA(255, 240, 214, 1).CGColor;
-        _borderView.layer.cornerRadius = 2.0f;
-        _borderView.clipsToBounds = YES;
-    }
-    return _borderView;
-}
 -(UILabel *)brandLab
 {
     if (!_brandLab) {
         _brandLab = [[UILabel alloc] init];
-        _brandLab.textColor = [LYColor colorWithHexString:@"#ffae22"];
+        _brandLab.textColor = LYColor_A3;
         _brandLab.font = [UIFont systemFontOfSize:11*WEIGHT];
         _brandLab.textAlignment = NSTextAlignmentCenter;
-        _brandLab.backgroundColor = UIColorRGBA(255, 240, 214, 1);
+        _brandLab.backgroundColor = [UIColor whiteColor];
         _brandLab.text = @"中国平安";
-        _brandLab.layer.cornerRadius = 2.0f;
+        _brandLab.layer.cornerRadius = 9.0f*HEIGHT;
+        _brandLab.alpha = 0.8;
         _brandLab.clipsToBounds = YES;
     }
     return _brandLab;
@@ -149,12 +156,38 @@
 {
     if (!_countLab) {
         _countLab = [[UILabel alloc] init];
-        _countLab.textColor = LYColor_A4;
+        _countLab.textColor = LYColor_A1;
         _countLab.font = [UIFont systemFontOfSize:12*WEIGHT];
         _countLab.text = @"销量 12万份";
-        _countLab.textAlignment = NSTextAlignmentRight;
+//        _countLab.textAlignment = NSTextAlignmentRight;
     }
     return _countLab;
+}
+-(UIImageView *)fanImg
+{
+    if (!_fanImg) {
+        _fanImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tuiguangfeibiaoqian"]];
+    }
+    return _fanImg;
+}
+-(UILabel *)fanLab
+{
+    if (!_fanLab) {
+        _fanLab =[[UILabel alloc] init];
+        _fanLab.font = [UIFont systemFontOfSize:11*WEIGHT];
+        _fanLab.textColor = [LYColor colorWithHexString:@"ffffff"];
+        _fanLab.textAlignment = NSTextAlignmentCenter;
+        _fanLab.text = @"推广费最高25%";
+    }
+    return _fanLab;
+}
+-(AllLine *)lineView
+{
+    if (!_lineView) {
+        _lineView = [[AllLine alloc] initWithFrame:CGRectMake(0, 0, ScreenWindowWidth, 133*HEIGHT)];
+        _lineView.backgroundColor = [UIColor clearColor];
+    }
+    return _lineView;
 }
 - (void)awakeFromNib {
     [super awakeFromNib];

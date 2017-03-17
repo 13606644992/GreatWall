@@ -37,7 +37,7 @@
     [self.desLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(view).with.offset(24*WEIGHT);
         make.centerY.equalTo(self.titleImg);
-        make.right.equalTo(view).with.offset(-13*WEIGHT);
+        make.right.mas_equalTo(self.titleImg.mas_left).with.offset(-13*WEIGHT);
         make.height.equalTo(@(11*HEIGHT));
     }];
     [cell.contentView addSubview:self.titleLab];
@@ -45,7 +45,7 @@
         make.left.equalTo(self.desLab);
         make.bottom.mas_equalTo(self.desLab.mas_top).with.offset(-11*HEIGHT);
         make.height.equalTo(@(16*HEIGHT));
-        make.right.equalTo(view).with.offset(-13*WEIGHT);
+        make.right.mas_equalTo(self.titleImg.mas_left).with.offset(-13*WEIGHT);
     }];
     [cell.contentView addSubview:self.amountKindLab];
     [self.amountKindLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -71,37 +71,49 @@
         make.left.mas_equalTo(self.qiLab.mas_right).with.offset(16*WEIGHT);
         make.top.mas_equalTo(self.desLab.mas_bottom).with.offset(11*HEIGHT);
         make.height.equalTo(@(17*HEIGHT));
-        make.width.equalTo(@(80*WEIGHT));
+        make.width.equalTo(@(96*WEIGHT));
     }];
     [cell.contentView addSubview:self.fanLab];
     [self.fanLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.fanImg);
-        make.size.mas_equalTo(CGSizeMake(60*WEIGHT, 11*HEIGHT));
+        make.size.mas_equalTo(CGSizeMake(80*WEIGHT, 11*HEIGHT));
     }];
 
 }
--(void)setIndexPathRow:(NSInteger)indexPathRow
-{
-    if (indexPathRow==0) {
-        self.lineView.hidden = NO;
-        self.bezierView.hidden = YES;
-    }else{
-        self.lineView.hidden = YES;
-        self.bezierView.hidden = NO;
-    }
-}
+//-(void)setIndexPathRow:(NSInteger)indexPathRow
+//{
+//    if (indexPathRow==0) {
+//        self.lineView.hidden = NO;
+//        self.bezierView.hidden = YES;
+//    }else{
+//        self.lineView.hidden = YES;
+//        self.bezierView.hidden = NO;
+//    }
+//}
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
 }
--(void)setModel:(HomeCellModel *)model
+-(void)setModel:(HomeProduct *)model
 {
-    [self.titleImg sd_setImageWithURL:[NSURL URLWithString:@""] placeholderImage:[UIImage imageNamed:@"01.jpg"]];
-    
-    CGRect tempRect = [self.amountLab.text   boundingRectWithSize:CGSizeMake(ScreenWindowWidth-ScreenWindowWidth/3-65,25)options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17*HEIGHT]}context:nil];
+    if ([IS_Bclient integerValue] == 1) {
+        self.fanImg.hidden = NO;
+        self.fanLab.hidden = NO;
+    }else{
+        self.fanImg.hidden = YES;
+        self.fanLab.hidden = YES;
+    }
+    self.titleLab.text = model.productName;
+    self.fanLab.text = [NSString stringWithFormat:@"推广费最高%@%@",model.commisionValue1,@"%"];
+    [self.titleImg sd_setImageWithURL:[NSURL URLWithString:model.productLogo] placeholderImage:PlaceImage];
+    self.amountLab.text = [NSString stringWithFormat:@"%.02f",[model.minPremium floatValue]/100];
+
+    CGRect tempRect = [self.amountLab.text  boundingRectWithSize:CGSizeMake(100*WEIGHT,16*HEIGHT)options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16*HEIGHT]}context:nil];
+
     [self.amountLab mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.width.equalTo(@(tempRect.size.width+5));
+        make.width.equalTo(@(tempRect.size.width+5*WEIGHT));
     }];
+    self.desLab.text = model.productIntro;
     [self layoutIfNeeded];
 }
 #pragma mark  -------Controller-------------
@@ -139,7 +151,7 @@
         _fanLab.font = [UIFont systemFontOfSize:11*WEIGHT];
         _fanLab.textColor = [LYColor colorWithHexString:@"ffffff"];
         _fanLab.textAlignment = NSTextAlignmentCenter;
-        _fanLab.text = @"25%推广费";
+        _fanLab.text = @"推广费最高25%";
     }
     return _fanLab;
 }
@@ -197,7 +209,7 @@
     return _bezierView;
 }
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
+    [super setSelected:NO animated:NO];
     // Configure the view for the selected state
 }
 

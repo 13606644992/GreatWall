@@ -155,7 +155,7 @@
     }
 }
 - (void)selectTheViewWithButton:(UIButton *)sender{
-    NSLog(@"%ld", sender.tag);
+    NSLog(@"%ld", (long)sender.tag);
     [UIView animateWithDuration:0.2 animations:^{
         if (sender.tag == 1000) {
             [self.zoomScrollView setContentOffset:CGPointMake(0, 0) animated:NO];

@@ -9,5 +9,7 @@
 #import "MessageModel.h"
 
 @implementation MessageModel
-
+-(void)setValue:(id)value forUndefinedKey:(NSString *)key{
+    
+}
 @end

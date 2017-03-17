@@ -46,6 +46,14 @@
         make.centerY.equalTo(self.contentView);
         make.size.mas_equalTo(CGSizeMake(30*WEIGHT, 40*HEIGHT));
     }];
+    UILabel *line = [[UILabel alloc] init];
+    line.backgroundColor = LYColor_A6;
+    [self.contentView addSubview:line];
+    [line mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(@(18*WIDTH));
+        make.right.bottom.equalTo(self.contentView);
+        make.height.equalTo(@(0.5));
+    }];
 }
 -(void)setModel:(SearchModel *)Model
 {

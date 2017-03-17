@@ -13,7 +13,7 @@
 
 @interface HomeSiftCell : UITableViewCell
 
-@property (nonatomic, strong) HomeCellModel *model;
+@property (nonatomic, strong) HomeProduct *model;
 @property (nonatomic ,strong) ImaginaryLine *lineView;
 @property (nonatomic ,strong) BezierPathLine *bezierView;
 @property (nonatomic, strong) UIImageView *titleImg;

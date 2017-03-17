@@ -32,10 +32,10 @@ typedef NS_ENUM(NSInteger, MallSelectStyle) {
     NSInteger filSelect;
 
 }
+@property (nonatomic ,strong)NSMutableArray *dataArray;
 @property (nonatomic ,strong)NSArray *styleArray;
 @property (nonatomic ,strong)UITableView *tabView;
 @property (nonatomic ,strong)UILabel *lineLab;
-
 
 @end
 
@@ -48,35 +48,60 @@ typedef NS_ENUM(NSInteger, MallSelectStyle) {
     filSelect = 0;
     filStyle = MallSelectStyleone;
     [self.view addSubview:self.tabView];
-}
 
+    [DataGreatWall PostTheProductTypeWith:self.indexSelectVC WithThePageIndex:@"1" WithThePageSize:@"10" WithTheKey:@"" WithTheTargetID:@"" isGetDefault:@"0" WithDefaultNum:@"0" WithSortCode:@"0" WithBenefitNum:@"3" WithBlock:^(NSString *respCode, NSString *respMsg, NSString *pageSize, NSString *totalCount, NSMutableArray *array, NSError *error) {
+        if (error) {
+            
+        }else if ([respCode isEqualToString:@"000000"]){
+            self.dataArray = array;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tabView reloadData];
+            });
+        }else{
+            
+        }
+    }];
+}
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
+}
+-(void)MallViewMJHeaderLoadTable
+{
+    
+}
+-(void)MallViewMJFotterLoadTable
+{
+    
+}
 //排序条件
 -(void)FiltrateButtonClick:(UIButton *)sender
 {
-    if (filSelect != 0) {
-        UIButton *button = (UIButton *)[self.view viewWithTag:filSelect];
-        button.selected = NO;
+
+    if (sender.tag !=1002) {
+        if (filSelect != 0) {
+            UIButton *button = (UIButton *)[self.view viewWithTag:filSelect];
+            button.selected = NO;
+        }
+        sender.selected = YES;
+        filSelect = sender.tag;
     }
-    sender.selected = YES;
-    filSelect = sender.tag;
     switch (sender.tag) {
         case 1000:{
             if (filStyle == MallSelectStyleone) {
                 filStyle = MallSelectStyleTwo;
-                [sender setTitle:@"从高到低" forState:UIControlStateNormal];
+                [sender setTitle:@"价格" forState:UIControlStateNormal];
                 [sender setImage:[UIImage imageNamed:@"paixu(shang)"] forState:UIControlStateSelected];
-
                 
             }else if (filStyle == MallSelectStyleTwo){
                 filStyle = MallSelectStyleThree;
-                [sender setTitle:@"从低到高" forState:UIControlStateNormal];
+                [sender setTitle:@"价格" forState:UIControlStateNormal];
                 [sender setImage:[UIImage imageNamed:@"paixu(xia)"] forState:UIControlStateSelected];
                 
             }else if (filStyle == MallSelectStyleThree){
                 filStyle = MallSelectStyleone;
                 sender.selected = NO;
-                [sender setTitle:@"价格排序" forState:UIControlStateNormal];
-                
+                [sender setTitle:@"  价格" forState:UIControlStateNormal];
             }else{
                 
             }
@@ -85,34 +110,23 @@ typedef NS_ENUM(NSInteger, MallSelectStyle) {
         case 1001:{
             filStyle = MallSelectStyleone;
             UIButton *button1 = (UIButton *)[self.view viewWithTag:1000];
-            [button1 setTitle:@"价格排序" forState:UIControlStateNormal];
-
+            [button1 setTitle:@"  价格" forState:UIControlStateNormal];
         }
             break;
         case 1002:{
-            filStyle = MallSelectStyleone;
-            UIButton *button2 = (UIButton *)[self.view viewWithTag:1000];
-            [button2 setTitle:@"价格排序" forState:UIControlStateNormal];
-
+            [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"SelectSearch" object:nil userInfo:@{@"select":self.indexSelectVC}]];
         }
             break;
         default:
             break;
     }
-    
 }
-
-
 
 #pragma mark ------TableViewDelegate-----------
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     return 36*HEIGHT;
 }
-//-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
-//{
-//    return 50;
-//}
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     return [self FiltrateButtonAndTableViewWithMall];
@@ -130,12 +144,13 @@ typedef NS_ENUM(NSInteger, MallSelectStyle) {
         filBtn.titleLabel.font = [UIFont systemFontOfSize:14*WEIGHT];
         [filBtn setTitle:self.styleArray[i] forState:UIControlStateNormal];
         [filBtn setTitleColor:LYColor_A4 forState:UIControlStateNormal];
-        [filBtn setTitleColor:LYColor_A3 forState:UIControlStateSelected];
+        [filBtn setTitleColor:LYColor_A1 forState:UIControlStateSelected];
+        filBtn.titleLabel.textAlignment =NSTextAlignmentRight;
         [filBtn addTarget:self action:@selector(FiltrateButtonClick:) forControlEvents:UIControlEventTouchUpInside];
         if (i==0) {
-            [filBtn setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
+//            [filBtn setImage:[UIImage new] forState:UIControlStateNormal];
             [filBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, -filBtn.imageView.image.size.width-10*WEIGHT, 0, filBtn.imageView.image.size.width+10*WEIGHT)];
-            [filBtn setImageEdgeInsets:UIEdgeInsetsMake(-5, filBtn.titleLabel.bounds.size.width+6*WEIGHT, -5, -filBtn.titleLabel.bounds.size.width)];
+            [filBtn setImageEdgeInsets:UIEdgeInsetsMake(-5, filBtn.titleLabel.bounds.size.width-13*WIDTH, -5, -filBtn.titleLabel.bounds.size.width)];
         }
         if (i==self.styleArray.count-1) {
             [filBtn setImage:[UIImage imageNamed:@"sanxuan(shancgheng)"] forState:UIControlStateNormal];
@@ -149,19 +164,20 @@ typedef NS_ENUM(NSInteger, MallSelectStyle) {
 }
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 5;
+    return self.dataArray.count;
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    MallModel *mode = [[MallModel alloc] init];
+    MallProduct *model = self.dataArray[indexPath.row];
     MallCell *cell = [MallCell MallcellWithTableView:tableView];
-    cell.model = mode;
+    cell.model = model;
     return cell;
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    MallProduct *model = self.dataArray[indexPath.row];
     //发送消息
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"DescriptionVC" object:nil userInfo:@{@"0":@"DescriptionVC"}]];
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"DescriptionVC" object:nil userInfo:@{@"DescriptionVC":[NSString stringWithFormat:@"%@",model.productId]}]];
 }
 #pragma mark -----------Controller----------
 -(UITableView *)tabView
@@ -171,16 +187,30 @@ typedef NS_ENUM(NSInteger, MallSelectStyle) {
 //        _tabView.backgroundColor = [UIColor redColor];
         _tabView.delegate = self;
         _tabView.dataSource = self;
-        _tabView.rowHeight = 190*HEIGHT;
+        _tabView.rowHeight = 147*HEIGHT;
         _tabView.separatorColor = LYColor_A6;
         _tabView.showsVerticalScrollIndicator = NO;
+        _tabView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        _tabView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+            [self MallViewMJHeaderLoadTable];
+        }];
+        _tabView.mj_footer = [MJRefreshFooter footerWithRefreshingBlock:^{
+            [self MallViewMJFotterLoadTable];
+        }];
     }
     return _tabView;
+}
+-(NSMutableArray *)dataArray
+{
+    if (!_dataArray) {
+        _dataArray = [NSMutableArray arrayWithCapacity:0];
+    }
+    return _dataArray;
 }
 -(NSArray *)styleArray
 {
     if (!_styleArray) {
-        _styleArray = @[@"价格排序",@"销量最高",@"筛选"];
+        _styleArray = @[@"  价格",@"销量最高",@"筛选"];
     }
     return _styleArray;
 }

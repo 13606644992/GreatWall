@@ -26,6 +26,7 @@
     BOOL isUp;
 }
 - (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:YES];
     self.navigationController.navigationBarHidden = YES;//隐藏导航栏
     StatusBarBlack;
 }

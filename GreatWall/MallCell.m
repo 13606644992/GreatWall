@@ -23,6 +23,7 @@
 }
 -(void)initMallCellAnyThingWith
 {
+    [self.contentView addSubview:self.lineView];
     [self.contentView addSubview:self.titleImg];
     [self.titleImg mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.contentView).with.offset(13*HEIGHT);
@@ -35,112 +36,130 @@
         make.top.equalTo(self.titleImg);
         make.size.mas_equalTo(CGSizeMake(150, 16*HEIGHT));
     }];
-    [self.contentView addSubview:self.hotImage];
-    [self.hotImage mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.titleLab.mas_right).with.offset(10*WEIGHT);
+    [self.contentView addSubview:self.hotLab];
+    [self.hotLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(self.titleLab.mas_right).with.offset(6*WEIGHT);
         make.top.equalTo(self.titleLab);
-        make.size.mas_equalTo(CGSizeMake(16*WEIGHT, 16*HEIGHT));
+        make.size.mas_equalTo(CGSizeMake(29*WEIGHT, 14*HEIGHT));
     }];
-
+    
+    [self.contentView addSubview:self.actionLab];
+    [self.actionLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(self.hotLab.mas_right).with.offset(6*WEIGHT);
+        make.top.equalTo(self.titleLab);
+        make.size.mas_equalTo(CGSizeMake(29*WEIGHT, 14*HEIGHT));
+    }];
     [self.contentView addSubview:self.ageLab];
     [self.ageLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.titleLab);
         make.top.mas_equalTo(self.titleLab.mas_bottom).with.offset(11*HEIGHT);
-        make.right.mas_equalTo(self.contentView.mas_right).with.offset(-20*HEIGHT);
+        make.right.mas_equalTo(self.contentView.mas_right).with.offset(-18*HEIGHT);
         make.height.equalTo(@(11*HEIGHT));
     }];
     [self.contentView addSubview:self.secLab];
     [self.secLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.titleLab);
-        make.top.mas_equalTo(self.ageLab.mas_top).with.offset(18);
-        make.right.mas_equalTo(self.contentView.mas_right).with.offset(-20*HEIGHT);
+        make.top.mas_equalTo(self.ageLab.mas_top).with.offset(18*HEIGHT);
+        make.right.mas_equalTo(self.contentView.mas_right).with.offset(-18*HEIGHT);
         make.height.equalTo(@(11*HEIGHT));
     }];
     [self.contentView addSubview:self.thirdLab];
     [self.thirdLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.titleLab);
-        make.top.mas_equalTo(self.secLab.mas_top).with.offset(18);
-        make.right.mas_equalTo(self.contentView.mas_right).with.offset(-20*HEIGHT);
+        make.top.mas_equalTo(self.secLab.mas_top).with.offset(18*HEIGHT);
+        make.right.mas_equalTo(self.contentView.mas_right).with.offset(-18*HEIGHT);
         make.height.equalTo(@(11*HEIGHT));
+    }];
+    [self.contentView addSubview:self.amountLab];
+    [self.amountLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(self.titleImg.mas_right).with.offset(30*WIDTH);
+        make.top.mas_equalTo(self.thirdLab.mas_bottom).with.offset(14*HEIGHT);
+        make.width.equalTo(@(100));
+        make.height.equalTo(@(17*WIDTH));
     }];
     [self.contentView addSubview:self.rmbLab];
     [self.rmbLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.titleLab);
-        make.top.mas_equalTo(self.thirdLab.mas_bottom).with.offset(15*HEIGHT);
+        make.bottom.equalTo(self.amountLab);
         make.size.mas_equalTo(CGSizeMake(14*WEIGHT, 14*HEIGHT));
     }];
-    [self.contentView addSubview:self.amountLab];
-    [self.amountLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.rmbLab.mas_right);
-        make.bottom.mas_equalTo(self.rmbLab.mas_bottom).with.offset(0*HEIGHT);
-        make.width.equalTo(@(100));
-        make.height.equalTo(@(17*HEIGHT));
-    }];
+  
     //    金额种类
 
     [self.contentView addSubview:self.qiLab];
     [self.qiLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.amountLab.mas_right).with.offset(0);
-        make.bottom.mas_equalTo(self.amountLab.mas_bottom).with.offset(0);
+        make.left.mas_equalTo(self.amountLab.mas_right);
+        make.bottom.equalTo(self.amountLab);
         make.width.equalTo(@(14*WEIGHT));
         make.height.equalTo(@(14*HEIGHT));
     }];
 
-    OnlyLine *line = [[OnlyLine alloc] initWithFrame:CGRectMake(129*WEIGHT, 138*HEIGHT, 246*WEIGHT, 1)];
-    line.backgroundColor = [UIColor whiteColor];
-    [self.contentView addSubview:line];
-    [self.contentView addSubview:self.borderView];
-    [self.borderView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.titleLab);
-        make.top.mas_equalTo(self.amountLab.mas_bottom).with.offset(28*HEIGHT);
-        make.size.mas_equalTo(CGSizeMake(60*HEIGHT, 24*HEIGHT));
-    }];
     [self.contentView addSubview:self.brandLab];
     [self.brandLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(self.borderView);
-        make.size.mas_equalTo(CGSizeMake(56*HEIGHT, 16*HEIGHT));
+        make.bottom.equalTo(self.titleImg).with.offset(-9*HEIGHT);
+        make.centerX.equalTo(self.titleImg);
+        make.size.mas_equalTo(CGSizeMake(85*WIDTH, 18*HEIGHT));
     }];
     //    返现背景图
     [self.contentView addSubview:self.fanImg];
     [self.fanImg mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(self.contentView.mas_right).with.offset(-13*WEIGHT);
         make.bottom.mas_equalTo(self.amountLab.mas_bottom).with.offset(0);
-        make.height.equalTo(@(17*HEIGHT));
-        make.width.equalTo(@(80*WEIGHT));
+        make.height.equalTo(@(16*HEIGHT));
+        make.width.equalTo(@(96*WEIGHT));
     }];
     //    返现金额比例
     [self.contentView addSubview:self.fanLab];
     [self.fanLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.fanImg);
-        make.size.mas_equalTo(CGSizeMake(60*WEIGHT, 11*HEIGHT));
+        make.size.mas_equalTo(CGSizeMake(80*WEIGHT, 11*HEIGHT));
     }];
     [self.contentView addSubview:self.countLab];
     [self.countLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.mas_equalTo(self.contentView.mas_right).with.offset(-13*WEIGHT);
-        make.centerY.mas_equalTo(self.borderView.mas_centerY);
+        make.left.right.equalTo(self.fanImg);
+        make.bottom.equalTo(self.amountLab);
         make.height.equalTo(@(12*HEIGHT));
     }];
 
 }
--(void)setModel:(MallModel *)model
+-(void)setModel:(MallProduct *)model
 {
-    CGRect tempRectHot = [self.titleLab.text   boundingRectWithSize:CGSizeMake(ScreenWindowWidth-220,16*HEIGHT)options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16*WEIGHT]}context:nil];
+    NSLog(@"--IS_Bclient**************************-%@",IS_Bclient);
+    if ([IS_Bclient integerValue] == 1) {
+        self.fanImg.hidden = NO;
+        self.fanLab.hidden = NO;
+        self.countLab.hidden = YES;
+    }else{
+        self.fanImg.hidden = YES;
+        self.fanLab.hidden = YES;
+        self.countLab.hidden = NO;
+    }
+    self.titleLab.text = model.productName;
+    CGRect tempRectHot = [model.productName  boundingRectWithSize:CGSizeMake(101.5*WIDTH,16*HEIGHT)options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16*WEIGHT]}context:nil];
     [self.titleLab mas_updateConstraints:^(MASConstraintMaker *make) {
         make.width.equalTo(@(tempRectHot.size.width+1));
     }];
+    [self.titleImg sd_setImageWithURL:[NSURL URLWithString:model.productLogo] placeholderImage:PlaceImage];
+    self.ageLab.text = [NSString stringWithFormat:@"投保年龄： %@",model.ageDesc];
+    
+    self.brandLab.text = model.insurerName;
+    self.countLab.text = [NSString stringWithFormat:@"销量 %@份",model.totalAmount];
+    self.amountLab.text = [NSString stringWithFormat:@"%.02f",[model.productPrice floatValue]/100];
     CGRect tempRect = [self.amountLab.text   boundingRectWithSize:CGSizeMake(ScreenWindowWidth-220,17*HEIGHT)options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17*WEIGHT]}context:nil];
     [self.amountLab mas_updateConstraints:^(MASConstraintMaker *make) {
         make.width.equalTo(@(tempRect.size.width+5));
     }];
-    CGRect tempRectBrand = [self.brandLab.text   boundingRectWithSize:CGSizeMake(ScreenWindowWidth-220,11*HEIGHT)options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:11*WEIGHT]}context:nil];
-    [self.borderView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.size.mas_equalTo(CGSizeMake(tempRectBrand.size.width+28*WEIGHT, 24*HEIGHT));
-    }];
-    [self.brandLab mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.size.mas_equalTo(CGSizeMake(tempRectBrand.size.width+22*WEIGHT, 18*HEIGHT));
+    self.fanLab.text = [NSString stringWithFormat:@"推广费最高%@%@",model.commisionValue1,@"%"];
+    [model.benefitList enumerateObjectsUsingBlock:^(MallBenefitList *list, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (idx == 0) {
+            self.ageLab.text = [NSString stringWithFormat:@"%@: %@",list.benefitName,list.insuredAmount];
+        }else if (idx == 2){
+            self.secLab.text = [NSString stringWithFormat:@"%@: %@",list.benefitName,list.insuredAmount];
+        }else{
+            self.thirdLab.text =  [NSString stringWithFormat:@"%@: %@",list.benefitName,list.insuredAmount];
+        }
     }];
     [self layoutIfNeeded];
-
 }
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -154,12 +173,33 @@
     }
     return _titleImg;
 }
--(UIImageView *)hotImage
+-(UILabel *)hotLab
 {
-    if (!_hotImage) {
-        _hotImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"hot"]];
+    if (!_hotLab) {
+        _hotLab = [[UILabel alloc] init];
+        _hotLab.backgroundColor = UIColorRGBA(255, 83, 70, 1);
+        _hotLab.layer.cornerRadius = 2*WIDTH;
+        _hotLab.text = @"爆款";
+        _hotLab.textAlignment = NSTextAlignmentCenter;
+        _hotLab.textColor = [UIColor whiteColor];
+        _hotLab.font = [UIFont systemFontOfSize:11*WIDTH];
+        _hotLab.clipsToBounds = YES;
     }
-    return _hotImage;
+    return _hotLab;
+}
+-(UILabel *)actionLab
+{
+    if (!_actionLab) {
+        _actionLab = [[UILabel alloc] init];
+        _actionLab.backgroundColor = UIColorRGBA(255, 83, 70, 1);
+        _actionLab.layer.cornerRadius = 2*WIDTH;
+        _actionLab.clipsToBounds = YES;
+        _actionLab.text = @"新品";
+        _actionLab.textAlignment = NSTextAlignmentCenter;
+        _actionLab.textColor = [UIColor whiteColor];
+        _actionLab.font = [UIFont systemFontOfSize:11*WIDTH];
+    }
+    return _actionLab;
 }
 -(UILabel *)titleLab
 {
@@ -176,12 +216,13 @@
 {
     if (!_brandLab) {
         _brandLab = [[UILabel alloc] init];
-        _brandLab.textColor = [LYColor colorWithHexString:@"#ffae22"];
+        _brandLab.textColor = LYColor_A3;
         _brandLab.font = [UIFont systemFontOfSize:11*WEIGHT];
         _brandLab.textAlignment = NSTextAlignmentCenter;
-        _brandLab.backgroundColor = UIColorRGBA(255, 240, 214, 1);
-        _brandLab.text = @"新华保险";
-        _brandLab.layer.cornerRadius = 2.0f;
+        _brandLab.backgroundColor = [UIColor whiteColor];
+        _brandLab.text = @"太平洋保险";
+        _brandLab.layer.cornerRadius = 9.0f*HEIGHT;
+        _brandLab.alpha = 0.8;
         _brandLab.clipsToBounds = YES;
     }
     return _brandLab;
@@ -246,18 +287,7 @@
     }
     return _qiLab;
 }
--(UIView *)borderView
-{
-    if (!_borderView) {
-        _borderView = [[UIView alloc] init];
-        _borderView.backgroundColor = [UIColor clearColor];
-        _borderView.layer.borderWidth = 1.0f;
-        _borderView.layer.borderColor = UIColorRGBA(255, 240, 214, 1).CGColor;
-        _borderView.layer.cornerRadius = 2.0f;
-        _borderView.clipsToBounds = YES;
-    }
-    return _borderView;
-}
+
 -(UIImageView *)fanImg
 {
     if (!_fanImg) {
@@ -272,7 +302,7 @@
         _fanLab.font = [UIFont systemFontOfSize:11*WEIGHT];
         _fanLab.textColor = [LYColor colorWithHexString:@"ffffff"];
         _fanLab.textAlignment = NSTextAlignmentCenter;
-        _fanLab.text = @"20%推广费";
+        _fanLab.text = @"推广费最高20%";
     }
     return _fanLab;
 }
@@ -281,15 +311,22 @@
     if (!_countLab) {
         _countLab = [[UILabel alloc] init];
         _countLab.textColor = LYColor_A4;
-        _countLab.font = [UIFont systemFontOfSize:12*WEIGHT];
+        _countLab.font = [UIFont systemFontOfSize:12*WIDTH];
         _countLab.text = @"销量 12万份";
         _countLab.textAlignment = NSTextAlignmentRight;
     }
     return _countLab;
 }
+-(AllLine *)lineView
+{
+    if (!_lineView) {
+        _lineView = [[AllLine alloc] initWithFrame:CGRectMake(0, 0, ScreenWindowWidth, 148*HEIGHT)];
+        _lineView.backgroundColor = [UIColor clearColor];
+    }
+    return _lineView;
+}
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:NO animated:NO];
-
     // Configure the view for the selected state
 }
 

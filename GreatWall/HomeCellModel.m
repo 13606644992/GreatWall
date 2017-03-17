@@ -9,5 +9,32 @@
 #import "HomeCellModel.h"
 
 @implementation HomeCellModel
-
+-(void)setValue:(id)value forUndefinedKey:(NSString *)key{
+    
+}
+@end
+@implementation HomeScroll
+-(void)setValue:(id)value forUndefinedKey:(NSString *)key{
+    
+}
+@end
+@implementation HomeSpecial
+-(void)setValue:(id)value forUndefinedKey:(NSString *)key{
+    
+}
+@end
+@implementation HomeHeader
+-(void)setValue:(id)value forUndefinedKey:(NSString *)key{
+    
+}
+@end
+@implementation HomeProduct
+-(void)setValue:(id)value forUndefinedKey:(NSString *)key{
+    
+}
+@end
+@implementation HomeXHBList
+-(void)setValue:(id)value forUndefinedKey:(NSString *)key{
+    
+}
 @end

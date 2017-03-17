@@ -14,7 +14,7 @@
 @property (nonatomic ,strong) UILabel *titleLab;
 @property (nonatomic ,strong) UILabel *detialLab;
 @property (nonatomic ,strong) UIImageView *detialImg;
-@property (nonatomic ,strong) UIButton *detailButton;
+//@property (nonatomic ,strong) UIButton *detailButton;
 
 + (instancetype)cellWithTableView:(UITableView *)tableView;
 

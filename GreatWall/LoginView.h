@@ -21,5 +21,5 @@
 @property (nonatomic, strong, nonnull)NSTimer *myTimer;
 @property (nonatomic, assign)NSInteger currentcountDown;
 //@property (nonatomic, strong, nonnull)UILabel *timeLabel;
-- (instancetype)init;
+- (nonnull instancetype)init;
 @end

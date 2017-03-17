@@ -8,6 +8,7 @@
 
 #import "RootViewController.h"
 
-@interface HomeViewController : RootViewController
+@interface HomeViewController : UIViewController
 
+@property (nonatomic ,strong) NSString *result;
 @end

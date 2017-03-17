@@ -11,14 +11,17 @@
 #import "MallModel.h"
 
 @interface CarMallCell : UITableViewCell
-@property (nonatomic, strong) MallModel *model;
+@property (nonatomic, strong) MallProduct *model;
+@property (nonatomic ,strong) AllLine *lineView;
 @property (nonatomic, strong) UIImageView *titleImg;
 @property (nonatomic, strong) UILabel *titleLab;
 @property (nonatomic, strong) UILabel *carTypeLab;
 @property (nonatomic, strong) UILabel *areaLab;
-@property (nonatomic, strong) UIView *borderView;
+//@property (nonatomic, strong) UIView *borderView;
 @property (nonatomic, strong) UILabel *brandLab;
 @property (nonatomic, strong) UILabel *countLab;
+@property (nonatomic, strong) UIImageView *fanImg;
+@property (nonatomic, strong) UILabel *fanLab;
 
 +(instancetype)MallcellWithTableView:(UITableView *)tableView;
 

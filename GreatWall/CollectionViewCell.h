@@ -7,7 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Header.h"
 
-@interface CollectionViewCell : UITableViewCell
+@interface CollectionViewCell : UITableViewCell<UICollectionViewDataSource,UICollectionViewDelegate>
+@property (nonatomic ,strong)PayTrade *trade;
+@property (nonatomic ,strong)OrderType *type;
+@property (nonatomic ,strong) UILabel *titleLab;
+@property (nonatomic ,strong) UILabel *bottomTitle;
+@property (nonatomic ,strong) UICollectionView * collect;
+@property (nonatomic ,strong)UIColor *selectColor;
 
+
+
++ (instancetype)cellWithTheCollectionViewTableView:(UITableView *)tableView;
 @end

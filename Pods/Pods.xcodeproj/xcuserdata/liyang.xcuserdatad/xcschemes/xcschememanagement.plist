@@ -9,6 +9,26 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>AliyunOSSiOS.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>IQKeyboardManager.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>JSBadgeView-JSBadgeView.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>JSBadgeView.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>MBProgressHUD.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -20,6 +40,11 @@
 			<false/>
 		</dict>
 		<key>Masonry.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>PNChart.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -39,10 +64,15 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>UICountingLabel.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>13E578E67A68E25BB45D34391D5A39A4</key>
+		<key>0FC1CB21D1B64FAAC47A6478616DA728</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -52,7 +82,32 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>992AE618D1BFEDA31EF3D695F191A4BE</key>
+		<key>4713F0C254D824AFCE023D25B1184AF3</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>5A23631F73A0F0AB6CBEB6515EBC4EED</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>604CA05C6D1F06EE61DCF233772F1661</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>A25615DF9BF8FFAF6A63BF1D878DC7DB</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>AC1C0FDD8EFCA7777414E78A1173CB1B</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C36CB2CB977A4E7D954935096D00A1ED</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -67,7 +122,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>DBD90FFF0A30F5B8EA7BC7E1B3C35099</key>
+		<key>D887781D8455F239E8ADEBB9926093A7</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>DA392EE8E5B24D16FB9910405A0AFC2E</key>
 		<dict>
 			<key>primary</key>
 			<true/>

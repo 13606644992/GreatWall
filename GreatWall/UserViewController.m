@@ -20,6 +20,11 @@
 #import "ZengXianViewController.h"
 #import "CustomerViewController.h"
 #import "CustomServiceVC.h"
+#import "HomeBangDingPhoneVC.h"
+
+//#import "SetViewController.h"
+
+
 @interface UserViewController ()
 
 @property (nonatomic, strong)UIImageView *headerIMGView;
@@ -38,6 +43,10 @@
 @property (nonatomic, strong)UITableView *myTableView;
 
 @property (nonatomic, strong)NSDictionary *dataDic;
+
+
+@property (nonatomic ,strong) UIButton *upBtn;//
+@property (nonatomic ,strong) UIView *upView;//
 @end
 
 @implementation UserViewController
@@ -46,6 +55,8 @@
     [self.navigationController setNavigationBarHidden:YES animated:YES];
     StatusBarWhite;
     [self resetDataWithUserInfo];
+    [self selectTheUserIsUpToB];
+
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle
@@ -544,9 +555,248 @@
     
     //加载用户信息
     [self resetDataWithUserInfo];
+    
+    [self setTheUserUpView];
 }
 
+-(void)selectTheUserIsUpToB
+{
+    [DataGreatWall PostTheUserUpToBWithBlock:^(NSString *respCode, NSString *respMsg, NSString *pageSize, NSString *totalCount, NSMutableArray *array, NSError *error) {
+        if (error) {
+            
+        }else if ([respCode isEqualToString:@"000000"]){
+            
+            NSLog(@"----%@",[[NSUserDefaults standardUserDefaults]objectForKey:@"Is_First"]);
+            if ([[[NSUserDefaults standardUserDefaults]objectForKey:@"Is_First"] isEqualToString:@"Y"]) {
+                self.upBtn.hidden = NO;
+                
+                //xiao
+            }else{
+                NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+                [user setValue:@"Y" forKey:@"Is_First"];
+                [user synchronize];
+                
+                [UIView animateWithDuration:0.5f animations:^{
+                    
+                    self.upView.frame = CGRectMake(18*WIDTH, ScreenWindowHeight-59-245*HEIGHT, ScreenWindowWidth-36*WIDTH, 245*HEIGHT);
+                }];
+                
+                
+                //da
+            }
+        }else{
+            
+        }
+    }];
+}
+-(void)setTheUserUpView
+{
+    [self.view addSubview:self.upBtn];
+    [self.upBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(self.view);
+        make.bottom.equalTo(self.view);
+        make.size.mas_equalTo(CGSizeMake(135*WIDTH, 22*HEIGHT));
+        
+    }];
+    
+    [self.view addSubview:self.upView];
+    UIImageView *bgImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"b2c-bg"]];
+    [self.upView addSubview:bgImg];
+    [bgImg mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.top.bottom.equalTo(self.upView);
+    }];
+    UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [backBtn setTitle:@"关闭" forState:UIControlStateNormal];
+    backBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+    [backBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [backBtn addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
+    backBtn.titleLabel.font = [UIFont systemFontOfSize:12*WIDTH];
+    [self.upView addSubview:backBtn];
+    [backBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(18*WIDTH);
+        make.top.equalTo(@(10*HEIGHT));
+        make.size.mas_equalTo(CGSizeMake(45*WIDTH, 27*HEIGHT));
+    }];
+    UIButton *upBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [upBtn setTitle:@"马上升级" forState:UIControlStateNormal];
+    upBtn.backgroundColor = UIColorRGBA(36, 160, 112, 1);
+    upBtn.layer.cornerRadius = 2.0f;
+    upBtn.clipsToBounds = YES;
+    [upBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [upBtn addTarget:self action:@selector(upToClick) forControlEvents:UIControlEventTouchUpInside];
+    upBtn.titleLabel.font = [UIFont systemFontOfSize:12*WIDTH];
+    [self.upView addSubview:upBtn];
+    [upBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.mas_equalTo(-10*WIDTH);
+        make.top.equalTo(@(10*HEIGHT));
+        make.size.mas_equalTo(CGSizeMake(72*WIDTH, 27*HEIGHT));
+    }];
+    
+    //成为签约代理人
+    UILabel *beDaiLab = [[UILabel alloc] init];
+    beDaiLab.textColor = [UIColor whiteColor];
+    beDaiLab.text = @"成为签约代理人";
+    beDaiLab.textAlignment = NSTextAlignmentCenter;
+    beDaiLab.font = [UIFont fontWithName:JiaCu size:21*WIDTH];
+    [self.upView addSubview:beDaiLab];
+    [beDaiLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.equalTo(self.upView);
+        make.top.equalTo(@(55*HEIGHT));
+        make.height.equalTo(@(21*HEIGHT));
+    }];
+    
+    //升级资格
+    UILabel *betypeLab = [[UILabel alloc] init];
+    betypeLab.textColor = [UIColor whiteColor];
+    betypeLab.text = @"您有升级资格，从此赚钱不愁";
+    betypeLab.textAlignment = NSTextAlignmentCenter;
+    betypeLab.font = [UIFont systemFontOfSize:12*WIDTH];
+    [self.upView addSubview:betypeLab];
+    [betypeLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.equalTo(self.upView);
+        make.top.mas_equalTo(beDaiLab.mas_bottom).with.offset(7*HEIGHT);
+        make.height.equalTo(@(21*HEIGHT));
+    }];
+    
+    UIImageView *typeImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"b2c-zhanshi"]];
+    [self.upView addSubview:typeImg];
+    [typeImg mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(@(18*WIDTH));
+        make.right.equalTo(@(-18*WIDTH));
+        make.top.mas_equalTo(betypeLab.mas_bottom).with.offset(18*HEIGHT);
+        make.bottom.equalTo(@(-18*HEIGHT));
+    }];
+    
+    
+}
 
+-(void)upToClick{
+    NSLog(@"去升级");
+    
+    if (GJ_Mobile) {
+        [DataGreatWall PostUpToBWithBlock:^(NSString *respCode, NSString *respMsg, NSString *pageSize, NSString *totalCount, NSMutableArray *array, NSError *error) {
+            if (error) {
+                
+            }else if ([respCode isEqualToString:@"000000"]){
+                self.result = @"1";
+                [[NSUserDefaults standardUserDefaults]setObject:@"1" forKey:@"GJ_isBClient"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+            }else{
+                
+            }
+        }];
+    }else{
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"成为签约代理人必须先绑定手机号码" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"马上绑定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            self.hidesBottomBarWhenPushed=YES;
+            HomeBangDingPhoneVC *searchVC = [[HomeBangDingPhoneVC alloc] init];
+            [self.navigationController pushViewController:searchVC animated:YES];
+            self.hidesBottomBarWhenPushed = NO;
+        }];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        [alertController addAction:okAction];
+        [alertController addAction:cancelAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+   
+    }
+}
+-(void)setResult:(NSString *)result
+{
+    if ([result isEqualToString:@"1"]) {
+        self.upBtn.hidden = YES;
+        for (UIView *view in self.upView.subviews) {
+            [view removeFromSuperview];
+        }
+        UIImageView *bgImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"b2c-bg"]];
+        [self.upView addSubview:bgImg];
+        [bgImg mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.right.top.bottom.equalTo(self.upView);
+        }];
+        UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [backBtn setTitle:@"关闭" forState:UIControlStateNormal];
+        backBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        [backBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [backBtn addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
+        backBtn.titleLabel.font = [UIFont systemFontOfSize:12*WIDTH];
+        [self.upView addSubview:backBtn];
+        [backBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(18*WIDTH);
+            make.top.equalTo(@(10*HEIGHT));
+            make.size.mas_equalTo(CGSizeMake(45*WIDTH, 27*HEIGHT));
+        }];
+        UIImageView *succerrImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"b2c-chenggong"]];
+        [self.upView addSubview:succerrImg];
+        [succerrImg mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.equalTo(self.upView);
+            make.top.equalTo(@(35*HEIGHT));
+            make.size.mas_equalTo(CGSizeMake(54*WIDTH, 63*HEIGHT));
+        }];
+        
+        //升级成功
+        UILabel *beDaiLab = [[UILabel alloc] init];
+        beDaiLab.textColor = [UIColor whiteColor];
+        beDaiLab.text = @"升级成功";
+        beDaiLab.textAlignment = NSTextAlignmentCenter;
+        beDaiLab.font = [UIFont fontWithName:JiaCu size:21*WIDTH];
+        [self.upView addSubview:beDaiLab];
+        [beDaiLab mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.right.equalTo(self.upView);
+            make.top.mas_equalTo(succerrImg.mas_bottom).with.offset(21*HEIGHT);
+            make.height.equalTo(@(21*HEIGHT));
+        }];
+        
+        //成为签约代理人
+        UILabel *betypeLab = [[UILabel alloc] init];
+        betypeLab.textColor = [UIColor whiteColor];
+        betypeLab.text = @"您已升级成签约代理人";
+        betypeLab.textAlignment = NSTextAlignmentCenter;
+        betypeLab.font = [UIFont systemFontOfSize:12*WIDTH];
+        [self.upView addSubview:betypeLab];
+        [betypeLab mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.right.equalTo(self.upView);
+            make.top.mas_equalTo(beDaiLab.mas_bottom).with.offset(7*HEIGHT);
+            make.height.equalTo(@(21*HEIGHT));
+        }];
+        
+        
+        UIButton *upBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [upBtn setTitle:@"马上去赚钱" forState:UIControlStateNormal];
+        upBtn.backgroundColor = [UIColor whiteColor];
+        upBtn.layer.cornerRadius = 2.0f;
+        upBtn.clipsToBounds = YES;
+        [upBtn setTitleColor:LYColor_A1  forState:UIControlStateNormal];
+        [upBtn addTarget:self action:@selector(goupToMakeClick) forControlEvents:UIControlEventTouchUpInside];
+        upBtn.titleLabel.font = [UIFont systemFontOfSize:12*WIDTH];
+        [self.upView addSubview:upBtn];
+        [upBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.equalTo(self.upView);
+            make.top.mas_equalTo(betypeLab.mas_bottom).with.offset(23*HEIGHT);
+            make.size.mas_equalTo(CGSizeMake(207*WIDTH, 45*HEIGHT));
+        }];
+    }
+}
+-(void)goupToMakeClick{
+    NSLog(@"zhuanqian--------");
+    
+//    self.tabBarController.selectedIndex = 1;
+    
+}
+-(void)backAction
+{
+    [UIView animateWithDuration:0.5f animations:^{
+        self.upView.frame = CGRectMake(18*WIDTH, ScreenWindowHeight, ScreenWindowWidth-36*WIDTH, 245*HEIGHT);
+    }];
+}
+-(void)userupToQianYueClick{
+    
+    self.upBtn.hidden = YES;
+    [UIView animateWithDuration:0.5f animations:^{
+        
+        self.upView.frame = CGRectMake(18*WIDTH, ScreenWindowHeight-59-245*HEIGHT, ScreenWindowWidth-36*WIDTH, 245*HEIGHT);
+    }];
+}
 
 #pragma mark !!!!!!!!!!!!!!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #pragma mark !!!!!!!!!!!!!!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -568,6 +818,10 @@
     }else{
         self.nameLabel.text = @"未登录";
         self.headerIMGView.image = [UIImage imageNamed:@"touxiang-moren.png"];
+        self.ketixian.text = @"— —";
+        self.shouru.text = @"— —";
+        self.jifen.text = @"— —";
+        self.hongbao.text = @"— —";
     }
 
 }
@@ -668,18 +922,18 @@
     NSLog(@"我的资产");
     if ([[NSUserDefaults standardUserDefaults]boolForKey:@"GJ_isLogin"]) {
         WodezichanViewController *wodezichanVC = [[WodezichanViewController alloc]init];
-        NSString *moneyStr = [NSString stringWithFormat:@"%@", self.dataDic[@"acctBalance"]];
-        NSString *money = [NSString stringWithFormat:@"%.2f", [moneyStr floatValue] / 100 ];  //可提现
-        wodezichanVC.moneyLabel.text = money;
-        NSString *jiesuanzhongStr = [NSString stringWithFormat:@"%@", self.dataDic[@"acctSettSum"]];
-        NSString *jiesuanzhong = [NSString stringWithFormat:@"%.2f", [jiesuanzhongStr floatValue] / 100 ];  //结算中
-        wodezichanVC.jiesuanzhong.text = jiesuanzhong;
-        NSString *benyueshouruStr = [NSString stringWithFormat:@"%@", self.dataDic[@"acctMonthSum"]];
-        NSString *benyueshouru = [NSString stringWithFormat:@"%.2f", [benyueshouruStr floatValue] / 100 ];  //本月收入
-        wodezichanVC.benyueshouru.text = benyueshouru;
-        NSString *leijishouruStr = [NSString stringWithFormat:@"%@", self.dataDic[@"acctSum"]];
-        NSString *leijishouru = [NSString stringWithFormat:@"%.2f", [leijishouruStr floatValue] / 100 ];  //累计收入
-        wodezichanVC.leijishouru.text = leijishouru;
+//        NSString *moneyStr = [NSString stringWithFormat:@"%@", self.dataDic[@"acctBalance"]];
+//        NSString *money = [NSString stringWithFormat:@"%.2f", [moneyStr floatValue] / 100 ];  //可提现
+//        wodezichanVC.moneyLabel.text = money;
+//        NSString *jiesuanzhongStr = [NSString stringWithFormat:@"%@", self.dataDic[@"acctSettSum"]];
+//        NSString *jiesuanzhong = [NSString stringWithFormat:@"%.2f", [jiesuanzhongStr floatValue] / 100 ];  //结算中
+//        wodezichanVC.jiesuanzhong.text = jiesuanzhong;
+//        NSString *benyueshouruStr = [NSString stringWithFormat:@"%@", self.dataDic[@"acctMonthSum"]];
+//        NSString *benyueshouru = [NSString stringWithFormat:@"%.2f", [benyueshouruStr floatValue] / 100 ];  //本月收入
+//        wodezichanVC.benyueshouru.text = benyueshouru;
+//        NSString *leijishouruStr = [NSString stringWithFormat:@"%@", self.dataDic[@"acctSum"]];
+//        NSString *leijishouru = [NSString stringWithFormat:@"%.2f", [leijishouruStr floatValue] / 100 ];  //累计收入
+//        wodezichanVC.leijishouru.text = leijishouru;
         self.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:wodezichanVC animated:YES];
         self.hidesBottomBarWhenPushed = NO;
@@ -816,12 +1070,20 @@
 
 - (void)settingAction:(UIButton *)sender{
     NSLog(@"设置");
-
-    [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"GJ_isLogin"];
+//    self.hidesBottomBarWhenPushed = YES;
+//    SetViewController *vc = [[SetViewController alloc]init];
+//    [self.navigationController pushViewController:vc animated:YES];
+//    [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"GJ_isLogin"];
+//    
+//    [[NSUserDefaults standardUserDefaults]synchronize];
+//    [self resetDataWithUserInfo];
+//    NSLog(@"%@", [[NSUserDefaults standardUserDefaults]objectForKey:@"GJ_userName"]);
     
-    [[NSUserDefaults standardUserDefaults]synchronize];
-    [self resetDataWithUserInfo];
-    NSLog(@"%@", [[NSUserDefaults standardUserDefaults]objectForKey:@"GJ_userName"]);
+    LoginViewController *loginVC = [[LoginViewController alloc]init];
+    self.hidesBottomBarWhenPushed = YES;
+    UINavigationController *loginNaVC = [[UINavigationController alloc]initWithRootViewController:loginVC];
+    [self presentViewController:loginNaVC animated:YES completion:nil];
+    self.hidesBottomBarWhenPushed = NO;
 }
 - (void)messageAction:(UIButton *)sender{
     NSLog(@"消息");
@@ -853,7 +1115,6 @@
 - (void)settingGestureAction{
     NSLog(@"设置");
 }
-
 
 
 
@@ -936,6 +1197,25 @@
         _hongbao = [[UILabel alloc]init];
     }
     return _hongbao;
+}
+-(UIView *)upView{
+    if (!_upView) {
+        _upView = [[UIView alloc] initWithFrame:CGRectMake(18*WIDTH, ScreenWindowHeight, ScreenWindowWidth-36*WIDTH, 245*HEIGHT)];
+    }
+    return _upView;
+}
+-(UIButton *)upBtn{
+    if (!_upBtn) {
+        _upBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        //        [_upBtn setImage:[UIImage imageNamed:@"c2b-shengji"] forState:UIControlStateNormal];
+        [_upBtn setBackgroundImage:[UIImage imageNamed:@"c2b-shengji"] forState:UIControlStateNormal];
+        [_upBtn setTitle:@"升级成签约代理人" forState:UIControlStateNormal];
+        [_upBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_upBtn addTarget:self action:@selector(userupToQianYueClick) forControlEvents:UIControlEventTouchUpInside];
+        _upBtn.titleLabel.font = [UIFont systemFontOfSize:14*WIDTH];
+        _upBtn.hidden = YES;
+    }
+    return _upBtn;
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

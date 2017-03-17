@@ -8,10 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "SquareModel.h"
-
+#import "AllLine.h"
 @interface SquareSecondCell : UITableViewCell
 
 @property (nonatomic, strong) SquareModel *model;
+@property (nonatomic, strong) SquareSpecial *modelSpecial;
+@property (nonatomic ,strong) AllLine *lineView;
 @property (nonatomic, strong) UIImageView *titleImg;
 @property (nonatomic, strong) UILabel *titleLab;
 @property (nonatomic, strong) UILabel *desLab;

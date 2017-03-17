@@ -9,10 +9,13 @@
 #import "MMTabBarModel.h"
 
 @implementation MMTabBarModel
-+ (instancetype)modelWithControllerClassName:(NSString *)className controllerTitle:(NSString *)title {
++ (instancetype)modelWithControllerClassName:(NSString *)className controllerTitle:(NSString *)title WithIndexInfo:(NSString *)index
+{
     MMTabBarModel *model =[[MMTabBarModel alloc] init];
     model.controllerClassName = className;
     model.controllerTitle = title;
+    model.indexSelect = index;
+    NSLog(@"---%@",model.indexSelect);
     return model;
 }
 @end

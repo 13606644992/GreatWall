@@ -10,4 +10,6 @@
 
 @interface PerInsureController : UIViewController
 
+@property (nonatomic ,strong)NSString *tradeId;
+
 @end

@@ -29,6 +29,7 @@
     StatusBarBlack;
 }
 - (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:YES];
     if (self.currentcountDown != 10 || self.currentcountDown != 0) {
         [self.myTimer invalidate];
         self.myTimer = nil;

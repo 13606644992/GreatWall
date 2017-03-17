@@ -22,8 +22,9 @@ typedef NS_ENUM(NSUInteger, MMTabBarViewGradientType) {
 @property (nonatomic, weak) id<MMTabBarViewDataSource> dataSource;
 @property (nonatomic, weak) id<MMTabBarViewDelegate> delegate;
 @property (nonatomic, assign) MMTabBarViewGradientType gradientType;     //default is MMTabBarViewGradientTypeNormal
-
+-(void)mmReloate;
 - (void)reload;
+-(void)reloateIndexWith:(NSInteger)index;
 @end
 
 

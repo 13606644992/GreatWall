@@ -29,7 +29,9 @@
     self.tabBar.backgroundColor = [LYColor colorWithHexString:@"fafafa"];
     self.tabBar.barStyle = UIBarStyleDefault;//此处需要设置barStyle，否则颜色会分成上下两层
 //    [self.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -5)];
-
+//    UIImageView *bgImg = [[UIImageView alloc] initWithFrame:CGRectMake(0, -6*HEIGHT, ScreenWindowWidth, 6*HEIGHT)];
+//    bgImg.image = [UIImage imageNamed:@"baodan-yinying"];
+//    [self.tabBar addSubview:bgImg];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

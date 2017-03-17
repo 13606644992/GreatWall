@@ -24,6 +24,7 @@
 
 @implementation PersonalViewController
 - (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:YES];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     self.navigationController.navigationBar.translucent = NO;
     self.navigationController.navigationBar.titleTextAttributes=@{NSForegroundColorAttributeName:LYColor_A1};//导航栏文字颜色及大小

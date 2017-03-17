@@ -9,10 +9,18 @@
 #import "MMTabBarViewController.h"
 #import "MMHeader.h"
 #import "NSObject+Calculate.h"
+#import "CarMallViewController.h"
+#import "MallViewController.h"
 
 static NSString *identifer = @"cellID";
 
 @interface MMTabBarViewController () <UICollectionViewDelegate ,UICollectionViewDataSource>
+{
+    CGFloat titleHorizontalMargin;
+    CGFloat distanceBetweenTitles;
+    NSInteger inNumer;
+
+}
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UIScrollView     *titleScrollView;
 @property (nonatomic, strong) UIView           *underline;
@@ -45,9 +53,13 @@ static NSString *identifer = @"cellID";
 @implementation MMTabBarViewController
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.view.backgroundColor = [UIColor whiteColor];
      self.automaticallyAdjustsScrollViewInsets = NO;
-    [self _initMethod];
     self.lastIndex = 0;
+    titleHorizontalMargin = 18.0f*[[UIScreen mainScreen] bounds].size.width/375;
+    distanceBetweenTitles = 16.0f*[[UIScreen mainScreen] bounds].size.width/375;
+    [self _initMethod];
+
 }
 
 - (void)viewDidLayoutSubviews {
@@ -56,6 +68,12 @@ static NSString *identifer = @"cellID";
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+//    NSLog(@"---%f",    self.titleScrollView.contentOffset.y);
+    [self mmReloate];
+}
+-(void)mmReloate{
+    self.titleWidthArray = [NSMutableArray array];
+
     if (!self.dataSource) return;
     self.titleScrollView.frame = CGRectMake(0, titleScrollViewToTop, self.view.width, _tabBarHeight);
     [self.view addSubview:self.lineLab];
@@ -73,6 +91,10 @@ static NSString *identifer = @"cellID";
     NSUInteger titleCount = [self.dataSource numberOfItemsInViewController:self];
     if (self.lastIndex != titleCount) {
         self.lastIndex = titleCount;
+        for (UILabel *view in self.titleScrollView.subviews) {
+                [view removeFromSuperview];
+        }
+        self.titlleLabels = [NSMutableArray array];
         CGFloat leftMargin = titleHorizontalMargin;
         for (int index = 0; index < titleCount; index ++) {
             UILabel *label = [[UILabel alloc] init];
@@ -80,7 +102,7 @@ static NSString *identifer = @"cellID";
             label.text = model.controllerTitle;
             label.textAlignment = NSTextAlignmentCenter;
             label.font = [UIFont systemFontOfSize:14*([[UIScreen mainScreen] bounds].size.width/375)];
-            label.frame = CGRectMake(leftMargin, 0,[self.titleWidthArray[index] floatValue], self.tabBarHeight);
+            label.frame = CGRectMake(leftMargin, 0,[self.titleWidthArray[index] floatValue]+1.4f, self.tabBarHeight);
             leftMargin += [self.titleWidthArray[index] floatValue] +distanceBetweenTitles  ;
             label.userInteractionEnabled = YES;
             label.tag = index;
@@ -88,17 +110,18 @@ static NSString *identifer = @"cellID";
             label.font = (index == 0)?[UIFont systemFontOfSize:14*([[UIScreen mainScreen] bounds].size.width/375)*self.fontAmplification]:[UIFont systemFontOfSize:14*([[UIScreen mainScreen] bounds].size.width/375)];
             [self.titlleLabels addObject:label];
             [self.titleScrollView addSubview:label];
-            
             //addTapGesture
+            if (index == 0) {
+                [[NSUserDefaults standardUserDefaults] setObject:@"0" forKey:@"index"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+            }
             UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(respondedToTapGestureRecognizer:)];
             [label addGestureRecognizer:tap];
         }
         [self _layoutGradientView:self.gradientType];
-        self.titleScrollView.contentSize = CGSizeMake(self.titleContentWidth+10.0f, self.tabBarHeight);
+        self.titleScrollView.contentSize = CGSizeMake(self.titleContentWidth-titleCount, self.tabBarHeight);
     }
-    
 }
-
 - (void)_layoutGradientView:(MMTabBarViewGradientType)type{
     UILabel *label = self.titlleLabels[0];
     switch (type) {
@@ -115,11 +138,11 @@ static NSString *identifer = @"cellID";
             break;
     }
 }
-
 /**
  *  先计算titles是否可以占满屏幕 可以就一个一个的布局 不可以就修改distanceBetweenTitles的值。刚好去占满屏幕
  */
 - (BOOL)_isTitlesContentNotLessThanViewWidth:(NSArray *)dataArray {
+    NSLog(@"");
     CGFloat titleContentWidth = titleHorizontalMargin;
     for (int index = 0; index < dataArray.count; index ++) {
         MMTabBarModel *model = dataArray[index];
@@ -158,6 +181,7 @@ static NSString *identifer = @"cellID";
         
     }
     self.titleContentWidth = titleContentWidth;
+//    NSLog(@"---%f",self.titleContentWidth);
 }
 
 - (void)_initMethod {
@@ -165,7 +189,7 @@ static NSString *identifer = @"cellID";
     self.titlleLabels = [NSMutableArray array];
     self.dataArray = [NSMutableArray array];
     self.underlineHeight = 2.0f;
-    self.tabBarHeight = 49.0f*([[UIScreen mainScreen] bounds].size.height/667);
+    self.tabBarHeight = 49.0f;
     self.maskViewCornerRadius = 8.0f;
     self.fontAmplification = 1.1;
     titleScrollViewToTop = self.navigationController == nil?0.0:64.0;
@@ -178,23 +202,23 @@ static NSString *identifer = @"cellID";
     self.underlineBackgroundColor = [LYColor colorWithHexString:@"#2dce8f"];
     self.titleScrollViewBackgroundColor = [LYColor colorWithHexString:@"#fafafa"];
     self.maskBackBackgroundColor = [LYColor colorWithHexString:@"333333"];
-    
 }
+
 
 - (void)_updateUnderlineAtIndex:(NSUInteger)selectedIndex {
     UILabel *label = self.titlleLabels[selectedIndex];
-   [UIView animateWithDuration:.25 animations:^{
-       switch (self.gradientType) {
-           case MMTabBarViewGradientTypeUnderline:{
+    [UIView animateWithDuration:.25 animations:^{
+        switch (self.gradientType) {
+            case MMTabBarViewGradientTypeUnderline:{
                 self.underline.frame = CGRectMake(label.left, self.tabBarHeight - self.underlineHeight,label.width , self.underlineHeight);
-               break;}
-           case MMTabBarViewGradientTypeMasking:{
+                break;}
+            case MMTabBarViewGradientTypeMasking:{
                 self.maskView.frame = CGRectMake(label.left, 5,label.width , self.tabBarHeight - 10);
-               break;}
-           default:
-               break;
-       }
-   }];
+                break;}
+            default:
+                break;
+        }
+    }];
 }
 
 - (void)_updateSelectedTitle:(NSUInteger)selectedIndex {
@@ -210,9 +234,11 @@ static NSString *identifer = @"cellID";
 
 - (void)_setTitleLocationCenter:(UILabel *)selectedLabel {
     if (self.titleContentWidth <= self.view.width) return;
+    
     CGFloat offsetX = MAX(0, (selectedLabel.center.x - self.view.width * 0.5));
     CGFloat maxOffsetX = MAX(0, (self.titleScrollView.contentSize.width - self.view.width));
     offsetX = MIN(offsetX, maxOffsetX);
+//    NSLog(@"");
     [self.titleScrollView setContentOffset:CGPointMake(offsetX, 0) animated:YES];
 }
 
@@ -248,11 +274,24 @@ static NSString *identifer = @"cellID";
 
 #pragma mark -- custom dispaly style
 - (void)_addChildViewControllers{
+    
+    
     if ([self.dataSource respondsToSelector:@selector(infomationsForViewController:)]) {
+        for (UIViewController *vc in self.childViewControllers) {
+            [vc removeFromParentViewController];
+        }
         self.dataArray = [[self.dataSource infomationsForViewController:self] mutableCopy];
         for (MMTabBarModel *model in self.dataArray) {
             UIViewController *vc = [[NSClassFromString(model.controllerClassName) alloc] init];
-            [self addChildViewController:vc];
+            if ([vc isKindOfClass:[CarMallViewController class]]) {
+                CarMallViewController *carVC = [[CarMallViewController alloc] init];
+                carVC.indexSelectVC = model.indexSelect;
+                [self addChildViewController:carVC];
+            }else{
+                MallViewController *mallVC = [[MallViewController alloc] init];
+                mallVC.indexSelectVC = model.indexSelect;
+                [self addChildViewController:mallVC];
+            }
         }
     }
 }
@@ -297,14 +336,34 @@ static NSString *identifer = @"cellID";
 }
 #pragma mark - public method
 - (void)reload{
+    self.lastIndex = 0;
+    [self _calculateTitleContentWidth];
     [self _addChildViewControllers];
     [self _customTabBar];
     [self _customTitles];
     [self _customUnderline];
     [self _customMarkView];
     [self.collectionView reloadData];
+//    if (index!=0) {
+//        [self _updateUnderlineAtIndex:index];
+//    }
 }
+-(void)reloateIndexWith:(NSInteger)index
+{
+    self.isInTapAction = YES;
+    UILabel *label = (UILabel *)[self.view viewWithTag:index];
+    if (label.tag == self.pageIndex) return;
+    CGFloat offsetX = label.tag * self.view.width;
+    self.pageIndex = label.tag;
+    [self _updateUnderlineAtIndex:label.tag];
+    [self.collectionView setContentOffset:CGPointMake(offsetX, 0) animated:NO];
+    self.lastOffsetX = offsetX;
+    [self _updateSelectedTitle:label.tag];
+    self.isInTapAction = NO;
+    [[NSUserDefaults standardUserDefaults] setObject:[NSString stringWithFormat:@"%ld",index] forKey:@"index"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 
+}
 #pragma mark - action
 - (void)respondedToTapGestureRecognizer:(UITapGestureRecognizer *)gestureRecognizer {
     self.isInTapAction = YES;
@@ -317,9 +376,9 @@ static NSString *identifer = @"cellID";
     self.lastOffsetX = offsetX;
     [self _updateSelectedTitle:label.tag];
     self.isInTapAction = NO;
+    [[NSUserDefaults standardUserDefaults] setObject:[NSString stringWithFormat:@"%ld",label.tag] forKey:@"index"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
-
-
 #pragma mark - UIcollectionView dataSource
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
@@ -330,9 +389,13 @@ static NSString *identifer = @"cellID";
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+    
+    
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifer forIndexPath:indexPath];
     [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    ;
     UIViewController *vc = self.childViewControllers[indexPath.row];
+
     vc.view.frame = CGRectMake(0, 0, self.collectionView.width, self.collectionView.height);
     [cell.contentView addSubview:vc.view];
     return cell;

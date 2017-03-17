@@ -22,6 +22,7 @@
     
 }
 - (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:YES];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     self.navigationController.navigationBar.translucent = NO;
     self.navigationController.navigationBar.titleTextAttributes=@{NSForegroundColorAttributeName:LYColor_A1};//导航栏文字颜色及大小
@@ -210,17 +211,17 @@
     NSString *type = [loginType isEqualToString:@"0"] ? @"1" : @"2";
     NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:@{@"userId" : userId, @"newPwd": miMaTextField.text, @"resetType" : type,@"smsCode" : yanZMTextField.text}];
     NSLog(@"%@",dic);
+    
+    
     [GJAFNetWork POST:URL_ALIANG params:dic method:@"resetLoginPwd" tpye:@"post" success:^(NSURLSessionDataTask *task, id responseObject) {
         NSLog(@"%@", responseObject);
         NSLog(@"%@", responseObject[@"respMsg"]);
         if ([responseObject[@"respCode"] isEqualToString:@"000000"]) {
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:@"密码修改成功" preferredStyle:UIAlertControllerStyleAlert];
-            [alert addAction:[UIAlertAction actionWithTitle:@"知道了" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                
+            
+            [DataGreatWall PostUpToBWithBlock:^(NSString *respCode, NSString *respMsg, NSString *pageSize, NSString *totalCount, NSMutableArray *array, NSError *error) {
+               
                 [self.navigationController popViewControllerAnimated:YES];
-            }]];
-
-            [self presentViewController:alert animated:YES completion:nil];
+            }];
         }
         
     } fail:^(NSURLSessionDataTask *task, NSError *error) {

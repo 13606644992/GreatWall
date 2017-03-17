@@ -10,4 +10,8 @@
 
 @interface SearchModel : NSObject
 
+@property(nonatomic ,strong)NSString *hot;//
+@property(nonatomic ,strong)NSString *keyId;//
+@property(nonatomic ,strong)NSString *keyName;//
+
 @end

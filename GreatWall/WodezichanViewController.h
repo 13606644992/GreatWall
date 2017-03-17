@@ -8,6 +8,7 @@
 
 #import "RootViewController.h"
 #import "PNChart.h"
+
 @interface WodezichanViewController : RootViewController<PNChartDelegate>
 @property (nonatomic, strong)UILabel *moneyLabel;
 @property (nonatomic, strong)UILabel *benyueshouru;

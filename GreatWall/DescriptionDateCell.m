@@ -44,14 +44,14 @@
         make.width.equalTo(@(120*WIDTH));
         make.height.equalTo(@(14*HEIGHT));
     }];
-    [self.contentView addSubview:self.detailButton];
-    [self.detailButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.detialImg);
-        make.top.equalTo(self.contentView);
-        make.width.equalTo(@(120*WIDTH));
-        make.height.equalTo(@(49*HEIGHT));
-    }];
-    
+//    [self.contentView addSubview:self.detailButton];
+//    [self.detailButton mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.right.equalTo(self.detialImg);
+//        make.top.equalTo(self.contentView);
+//        make.width.equalTo(@(120*WIDTH));
+//        make.height.equalTo(@(49*HEIGHT));
+//    }];
+//    
     
 }
 - (void)awakeFromNib {
@@ -88,12 +88,16 @@
     }
     return _detialLab;
 }
--(UIButton *)detailButton
-{
-    if (!_detailButton) {
-        _detailButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    }
-    return _detailButton;
+//-(UIButton *)detailButton
+//{
+//    if (!_detailButton) {
+//        _detailButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    }
+//    return _detailButton;
+//}
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+    [super setSelected:NO animated:NO];
+    
+    // Configure the view for the selected state
 }
-
 @end

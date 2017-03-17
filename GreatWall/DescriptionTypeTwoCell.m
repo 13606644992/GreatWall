@@ -45,13 +45,13 @@
         make.width.equalTo(@(120*WIDTH));
         make.height.equalTo(@(14*HEIGHT));
     }];
-    [self.contentView addSubview:self.detailButton];
-    [self.detailButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.detialImg);
-        make.top.equalTo(self.contentView);
-        make.width.equalTo(@(120*WIDTH));
-        make.height.equalTo(@(49*HEIGHT));
-    }];
+//    [self.contentView addSubview:self.detailButton];
+//    [self.detailButton mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.right.equalTo(self.detialImg);
+//        make.top.equalTo(self.contentView);
+//        make.width.equalTo(@(120*WIDTH));
+//        make.height.equalTo(@(49*HEIGHT));
+//    }];
     
     
 }
@@ -85,17 +85,17 @@
         _detialLab.textColor = LYColor_A3;
         _detialLab.textAlignment = NSTextAlignmentRight;
         _detialLab.font = [UIFont systemFontOfSize:14*WIDTH];
-        _detialLab.text = @"1-7天";
+//        _detialLab.text = @"1-7天";
     }
     return _detialLab;
 }
--(UIButton *)detailButton
-{
-    if (!_detailButton) {
-        _detailButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    }
-    return _detailButton;
-}
+//-(UIButton *)detailButton
+//{
+//    if (!_detailButton) {
+//        _detailButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    }
+//    return _detailButton;
+//}
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:NO animated:NO];

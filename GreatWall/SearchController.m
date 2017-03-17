@@ -11,12 +11,22 @@
 #import "Header.h"
 #import "SearchCell.h"
 #import "SearchModel.h"
+#import "MallCell.h"
+#import "CarMallCell.h"
+#import "CarNumberController.h"
+
 
 @interface SearchController ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
 {
     NSString *filePath;
     NSMutableArray *searchArray;
+    NSMutableArray *hotKeys;
+    NSMutableArray *productArray;
 }
+/*
+ *  高度
+ */
+@property (nonatomic ,strong) NSMutableDictionary *dictorys;
 @property (nonatomic ,strong)UIButton *cancelBtn;
 @property (nonatomic ,strong)UIButton *removeBtn;
 @property (nonatomic ,strong)UILabel *removeLab;
@@ -28,7 +38,10 @@
 @property (nonatomic ,strong)UILabel *HistoryLabel;
 @property (nonatomic ,strong)NSArray *titleArray;
 @property (nonatomic ,strong)UITableView *tabView;
-
+/*
+ *  表格样式
+ */
+@property (nonatomic ,assign) NSInteger tableViewType;
 
 @end
 
@@ -42,13 +55,27 @@
     filePath =[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/a.txt"];
     [self setSearchHeaderWithSearch];
     [self.view addSubview:self.tabView];
-
+    self.dictorys = [NSMutableDictionary dictionaryWithObject:@(0) forKey:@(0)];
+    [DataGreatWall PostTheSetHotKeysWithBlock:^(NSString *respCode, NSString *respMsg, NSString *pageSize, NSString *totalCount, NSMutableArray *array, NSError *error) {
+        if (error) {
+            
+        }else if ([respCode isEqualToString:@"000000"]){
+            hotKeys = array;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tabView reloadData];
+            });
+        }else{
+            
+        }
+    }];
 //    [self setBoundsWithSearch];
 }
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
+    StatusBarBlack;
     self.navigationController.navigationBarHidden = YES;
+    self.tableViewType = ProductTypeModeDefailt;
     searchArray = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
     if (!searchArray) {
         searchArray = [[NSMutableArray alloc] initWithCapacity:0];
@@ -57,6 +84,14 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tabView reloadData];
     });
+}
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:YES];
+    StatusBarBlack;
+}
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:YES];
+    StatusBarWhite;
 }
 //导航
 -(void)setSearchHeaderWithSearch
@@ -106,7 +141,10 @@
 
         UIButton *searchBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         searchBtn.titleLabel.font = [UIFont systemFontOfSize:13*HEIGHT];
-        [searchBtn setTitle:self.titleArray[i] forState:UIControlStateNormal];
+        if (i<hotKeys.count) {
+            SearchModel *model = hotKeys[i];
+            [searchBtn setTitle:model.keyName forState:UIControlStateNormal];
+        }
         [searchBtn setTitleColor:LYColor_A4 forState:UIControlStateNormal];
         searchBtn.layer.cornerRadius = 2.0f;
         [searchBtn setBackgroundColor:LYColor_A7];
@@ -141,18 +179,6 @@
         lastBtn = searchBtn;
     }
     
-//    [HeaderView addSubview:self.HistoryLabel];
-//    [self.HistoryLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.equalTo(HeaderView).with.offset(20*HEIGHT);
-//        make.top.equalTo(HeaderView).with.offset(5);
-//        make.size.mas_equalTo(CGSizeMake(100, 30*HEIGHT));
-//    }];
-//    [HeaderView addSubview:self.removeBtn];
-//    [self.removeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.right.mas_equalTo(HeaderView.mas_right).with.offset(-20*HEIGHT);
-//        make.top.equalTo(@(10));
-//        make.size.mas_equalTo(CGSizeMake(20*HEIGHT, 20*HEIGHT));
-//    }];
     return HeaderView;
 
 }
@@ -196,46 +222,138 @@
 //热门搜索
 -(void)hotClick:(UIButton *)sender
 {
-    NSLog(@"----------%ld",sender.tag);
+    NSLog(@"----------%ld",(long)sender.tag);
 }
 #pragma mark ------------TableViewDelegate---------
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 2;
+    if (self.tableViewType == ProductTypeModeDefailt) {
+        return 2;
+    }
+    return 1;
 }
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    if (self.tableViewType == ProductTypeModeDefailt) {
+        return 59*HEIGHT;
+    }
+    if (productArray.count>indexPath.row) {
+        MallProduct *model = productArray[indexPath.row];
+        if ([[NSString stringWithFormat:@"%@",model.classType] isEqualToString:@"1"]) {
+            return 132*HEIGHT;
+        }else{
+            return 147*HEIGHT;
+        }
+    }
+    return 147*HEIGHT;
+}
+-(CGFloat)tableView:(UITableView *)t ableViewheightForFooterInSection:(NSInteger)section
 {
+    if (self.tableViewType == ProductTypeModeDefailt) {
+        return 0.01;
+    }
     return 0.01;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    if (section == 0) {
-        return 145*HEIGHT;
+    if (self.tableViewType == ProductTypeModeDefailt) {
+        if (section == 0) {
+            return 145*HEIGHT;
+        }
+        return 36*HEIGHT;
     }
-    return 36*HEIGHT;
+    return 13*HEIGHT;
 }
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    if (section == 0) {
-        return [self setBoundsWithHotSearch];
+    if (self.tableViewType == ProductTypeModeDefailt) {
+        if (section == 0) {
+            return [self setBoundsWithHotSearch];
+        }
+        return [self setBoundsWithHistoryView];
     }
-    return [self setBoundsWithHistoryView];
+    return nil;
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (section == 1) {
-        return searchArray.count;
+    if (self.tableViewType == ProductTypeModeDefailt) {
+        if (section == 1) {
+            return searchArray.count;
+        }
+        return 0;
     }
-    return 0;
+    return productArray.count;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    SearchCell *cell = [SearchCell cellWithTableView:tableView];
-    [cell.removeBtn addTarget:self action:@selector(onlyRemoveClick:) forControlEvents:UIControlEventTouchUpInside];
-    cell.removeBtn.tag = indexPath.row+100;
-    cell.titleLab.text = searchArray[indexPath.row];
-    return cell;
+    if (self.tableViewType == ProductTypeModeDefailt) {
+        SearchCell *cell = [SearchCell cellWithTableView:tableView];
+        [cell.removeBtn addTarget:self action:@selector(onlyRemoveClick:) forControlEvents:UIControlEventTouchUpInside];
+        cell.removeBtn.tag = indexPath.row+100;
+        cell.titleLab.text = searchArray[indexPath.row];
+        return cell;
+    }else{
+        MallProduct *model = productArray[indexPath.row];
+        if ([[NSString stringWithFormat:@"%@",model.classType] isEqualToString:@"1"]) {
+            CarMallCell *cell = [CarMallCell MallcellWithTableView:tableView];
+            cell.model = model;
+            return cell;
+        }else{
+            MallCell *cell = [MallCell MallcellWithTableView:tableView];
+            cell.model = model;
+            return cell;
+        }
+    }
+    return nil;
 }
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.tableViewType == ProductTypeModeDefailt) {
+        [DataGreatWall PostTheProductTypeWith:@"" WithThePageIndex:@"1" WithThePageSize:@"10" WithTheKey:searchArray[indexPath.row] WithTheTargetID:@"" isGetDefault:@"0" WithDefaultNum:@"" WithSortCode:@"0" WithBenefitNum:@"3" WithBlock:^(NSString *respCode, NSString *respMsg, NSString *pageSize, NSString *totalCount, NSMutableArray *array, NSError *error) {
+            
+            if (error) {
+                
+            }else if ([respCode isEqualToString:@"000000"]){
+                if (array.count>0) {
+                    productArray = array;
+                    self.tableViewType = ProductTypeModeProducts;
+                    if (searchArray.count>=20) {
+                        [searchArray removeObjectAtIndex:searchArray.count-1];
+                    }
+                    [searchArray insertObject:self.textField.text atIndex:0];
+                    [self deleteTheSameArray];
+                    [searchArray writeToFile:filePath atomically:YES];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.tabView reloadData];
+                    });
+                }else{
+
+                }
+            }else{
+                
+            }
+            
+        }];
+    }else{
+        MallProduct *model = productArray[indexPath.row];
+        if ([[NSString stringWithFormat:@"%@",model.classType] isEqualToString:@"1"]) {
+            self.hidesBottomBarWhenPushed=YES;
+            CarNumberController *baseVC = [[CarNumberController alloc] init];
+         
+            [self.navigationController pushViewController:baseVC animated:YES];
+            self.hidesBottomBarWhenPushed = NO;
+            
+        }else{
+            self.hidesBottomBarWhenPushed=YES;
+            DescriptionController *baseVC = [[DescriptionController alloc] init];
+         
+            [self.navigationController pushViewController:baseVC animated:YES];
+//            self.hidesBottomBarWhenPushed = NO;
+        }
+   
+    }
+}
+
 -(void)onlyRemoveClick:(UIButton *)sender
 {
     [searchArray removeObjectAtIndex:sender.tag-100];
@@ -277,15 +395,37 @@
     if ([textField.text isEqualToString:@""]) {
         return NO;
     }
-    if (searchArray.count>=20) {
-        [searchArray removeObjectAtIndex:searchArray.count-1];
-    }
-    [searchArray insertObject:self.textField.text atIndex:0];
-    [self deleteTheSameArray];
-    [searchArray writeToFile:filePath atomically:YES];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.tabView reloadData];
-    });
+    [DataGreatWall PostTheProductTypeWith:@"" WithThePageIndex:@"1" WithThePageSize:@"10" WithTheKey:self.textField.text WithTheTargetID:@"" isGetDefault:@"0" WithDefaultNum:@"" WithSortCode:@"0" WithBenefitNum:@"3" WithBlock:^(NSString *respCode, NSString *respMsg, NSString *pageSize, NSString *totalCount, NSMutableArray *array, NSError *error) {
+        
+        if (error) {
+//            self.tableViewType = ProductTypeModeDefailt;
+
+        }else if ([respCode isEqualToString:@"000000"]){
+            if (array.count>0) {
+                productArray = array;
+                self.tableViewType = ProductTypeModeProducts;
+                if (searchArray.count>=20) {
+                    [searchArray removeObjectAtIndex:searchArray.count-1];
+                }
+                [searchArray insertObject:self.textField.text atIndex:0];
+                [self deleteTheSameArray];
+                [searchArray writeToFile:filePath atomically:YES];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.tabView reloadData];
+                });
+            }else{
+//                self.tableViewType = ProductTypeModeDefailt;
+            }
+        }else{
+//            self.tableViewType = ProductTypeModeDefailt;
+
+        }
+        
+    }];
+    
+    
+    
+
     return YES;
 }
 -(void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
@@ -297,10 +437,10 @@
 {
     if (!_tabView) {
         _tabView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, ScreenWindowWidth, ScreenWindowHeight-64) style:UITableViewStylePlain];
-        _tabView.backgroundColor = [UIColor whiteColor];
+        _tabView.backgroundColor = LYColor_A7;
         _tabView.delegate = self;
         _tabView.dataSource = self;
-        _tabView.rowHeight = 59*HEIGHT;
+        _tabView.separatorColor = [UIColor clearColor];
     }
     return _tabView;
 }

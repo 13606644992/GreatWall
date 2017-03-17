@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PayViewModel.h"
 
 @interface PayViewController : UIViewController
+
+@property (nonatomic ,strong) PayOrderModel *model;
 
 @end

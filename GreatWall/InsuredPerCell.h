@@ -7,7 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Header.h"
 
 @interface InsuredPerCell : UITableViewCell
+@property (nonatomic ,strong)PayTrade *trade;
 
+@property (nonatomic ,strong) UILabel *titleLab;
+@property (nonatomic ,strong)UIColor *selectColor;
+@property (nonatomic ,strong)NSArray *relations;
+
++ (instancetype)cellWithTheInsureTableView:(UITableView *)tableView;
 @end

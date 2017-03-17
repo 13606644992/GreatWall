@@ -16,6 +16,7 @@
 
 @implementation ResetPswViewController
 - (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:YES];
     self.navigationController.navigationBarHidden = YES;
     StatusBarBlack;
 }

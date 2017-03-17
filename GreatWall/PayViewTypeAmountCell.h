@@ -7,7 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Header.h"
 
 @interface PayViewTypeAmountCell : UITableViewCell
 
+
+@property (nonatomic ,strong) UILabel *titleLab;
+@property (nonatomic ,strong) UILabel *detialLab;
+@property (nonatomic ,strong) UILabel *lineLab;
+
+
++ (instancetype)cellWithPayViewTableView:(UITableView *)tableView;
 @end

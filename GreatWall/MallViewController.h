@@ -8,6 +8,7 @@
 
 #import "RootViewController.h"
 
-@interface MallViewController : RootViewController
+@interface MallViewController : UIViewController
+@property (nonatomic ,strong) NSString *indexSelectVC;
 
 @end

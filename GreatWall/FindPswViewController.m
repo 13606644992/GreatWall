@@ -22,10 +22,12 @@
 
 @implementation FindPswViewController
 - (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:YES];
     self.navigationController.navigationBarHidden = YES;//隐藏导航栏
     StatusBarBlack;
 }
 - (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:YES];
     if (self.currentcountDown != 10 || self.currentcountDown != 0) {
         [self.myTimer invalidate];
         self.myTimer = nil;

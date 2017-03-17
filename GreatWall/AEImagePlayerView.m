@@ -179,7 +179,7 @@ typedef enum {
     
     //3,默认角标
     self.index = 0;
-    
+    self.timerTime = 5.0f;
     //4,创建定时器
 //    [self addAETimer];  不能释放
     
@@ -333,6 +333,7 @@ typedef enum {
     
     //通过sdimage 加载对应地址的图片
     SDWebImageManager *webImageMgr = [SDWebImageManager sharedManager];
+//    webImageMgr.
     self.downloadImages = nil;
 
     //定义一个临时可变数组
@@ -345,11 +346,13 @@ typedef enum {
         url = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         
         NSURL *imgUrl = [NSURL URLWithString:url];
-        [webImageMgr loadImageWithURL:imgUrl options:SDWebImageCacheMemoryOnly progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
-            
-        } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
-            if (image)[temp addObject:image];
-            
+
+        [webImageMgr loadImageWithURL:imgUrl options:SDWebImageCacheMemoryOnly progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
+            if (image){
+                [temp addObject:image];
+            }else{
+                [temp addObject:PlaceImage];
+            }
             if (temp.count == self.imageUrls.count) {//遍历到最后一个时 赋值给控件
                 self.currentImageView.image = temp.firstObject;
                 self.downloadImages = temp;
@@ -359,18 +362,23 @@ typedef enum {
             }
 
         }];
-//        [webImageMgr downloadImageWithURL:imgUrl options:SDWebImageCacheMemoryOnly progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+       
+//        [webImageMgr loadImageWithURL:imgUrl options:SDWebImageCacheMemoryOnly progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
 //            
-//            //把加载到的图片存进本地图片数组
-//            if (image)[temp addObject:image];
-//            
+//        } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
+//            if (image){
+//                [temp addObject:image];
+//            }else{
+//                [temp addObject:PlaceImage];
+//            }
 //            if (temp.count == self.imageUrls.count) {//遍历到最后一个时 赋值给控件
 //                self.currentImageView.image = temp.firstObject;
 //                self.downloadImages = temp;
-//                 
+//                
 //                //添加定时器
 //                [self addAETimer];
 //            }
+//
 //        }];
     }
 
@@ -394,7 +402,7 @@ typedef enum {
     _moveDirection = moveDirection;
     if (self.moveDirection == AEImagePlayerViewMoveDirectionWait)return;// 滑动结束,赋值等待状态,直接返回.
     
-    CGFloat x ;
+    CGFloat x;
     long long index = 0;
     if (self.moveDirection == AEImagePlayerViewMoveDirectionRight) {// 向右滑动
         x = 0;
@@ -430,7 +438,7 @@ typedef enum {
     }
     self.timer = nil;
     //这里的掉用时间要和动画时间吻合
-    self.timer = [NSTimer timerWithTimeInterval:4.0 target:self selector:@selector(nextImageByScroll) userInfo:nil repeats:YES];
+    self.timer = [NSTimer timerWithTimeInterval:self.timerTime target:self selector:@selector(nextImageByScroll) userInfo:nil repeats:YES];
     //添加到主运行循环
     [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
 }
@@ -566,7 +574,7 @@ typedef enum {
 
 -(void)dealloc{
     [self removeAETimer];
-    NSLog(@"++++++++dalloc-------%s---",__func__);
+//    NSLog(@"++++++++dalloc-------%s---",__func__);
 }
 
 

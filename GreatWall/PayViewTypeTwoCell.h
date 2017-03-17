@@ -7,7 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Header.h"
 
 @interface PayViewTypeTwoCell : UITableViewCell
+
+@property (nonatomic ,strong) UILabel *titleLab;
+@property (nonatomic ,strong) UIImageView *styleImg;
+
+
++ (instancetype)cellWithPayViewTypeTableView:(UITableView *)tableView;
 
 @end

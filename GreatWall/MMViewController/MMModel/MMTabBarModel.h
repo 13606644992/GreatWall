@@ -11,5 +11,7 @@
 @interface MMTabBarModel : NSObject
 @property (nonatomic, copy) NSString *controllerClassName;
 @property (nonatomic, copy) NSString *controllerTitle;
-+ (instancetype)modelWithControllerClassName:(NSString *)className controllerTitle:(NSString *)title;
+@property (nonatomic, copy) NSString *indexSelect;
+
++ (instancetype)modelWithControllerClassName:(NSString *)className controllerTitle:(NSString *)title WithIndexInfo:(NSString *)index;
 @end

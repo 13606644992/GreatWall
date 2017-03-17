@@ -31,7 +31,7 @@
     
     NSArray *dataArr;
     
-    UIView *underLine;;
+    UIView *underLine;
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -79,6 +79,7 @@
         make.centerX.mas_equalTo(background);
         make.size.mas_equalTo(CGSizeMake(200, 14));
     }];
+
     
     line = [[UILabel alloc]init];
     line.backgroundColor = LYColor_A7;
@@ -122,7 +123,6 @@
         make.width.mas_equalTo(60);
     }];
     [self.shiBtn addTarget:self action:@selector(btnAction:) forControlEvents:UIControlEventTouchUpInside];
-//    [self.shiBtn setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
     self.shiBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.shiBtn.tag = 1001;
     self.shiBtn.hidden = YES;
@@ -182,10 +182,8 @@
     }];
 }
 - (void)loadDate{
-        NSString *documentPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
-        NSString *filePath = [documentPath stringByAppendingPathComponent:@"areaList.plist"];
-//            NSLog(@"地址 = %@",[NSArray arrayWithContentsOfURL:fileUrl]);
-//    NSLog(@"%@", [NSArray arrayWithContentsOfFile:filePath]);
+    NSString *documentPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+    NSString *filePath = [documentPath stringByAppendingPathComponent:@"areaList.plist"];
     for (NSDictionary *dic in [NSArray arrayWithContentsOfFile:filePath]) {
         AddressModel *model = [[AddressModel alloc]init];
         [model setValuesForKeysWithDictionary:dic];
@@ -275,6 +273,8 @@
             self.quBtn.userInteractionEnabled = YES;
             [self.quBtn setTitle:[locationArr objectAtIndex:indexPath.row] forState:UIControlStateNormal];
             [self.quBtn setTitleColor:LYColor_A3 forState:UIControlStateNormal];
+            
+            
             break;
         default:
             break;
@@ -294,7 +294,7 @@
 }
 
 - (void)btnAction:(UIButton *)sender{
-    NSLog(@"%ld", sender.tag);
+    NSLog(@"%ld", (long)sender.tag);
     switch (sender.tag) {
         case 1000:
             areaType = 0;
@@ -320,12 +320,16 @@
 
 
 - (void)backAction:(UIButton *)sender{
+    
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     UITouch *touch = [touches anyObject];
     if (self.view == [touch view]) {
-        [self dismissViewControllerAnimated:YES completion:nil];
+//        [self dismissViewControllerAnimated:YES completion:nil];
+        [self dismissViewControllerAnimated:YES completion:^{
+            NSLog(@"-----22222----");
+        }];
     }
 }
 

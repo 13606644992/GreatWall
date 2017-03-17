@@ -8,6 +8,8 @@
 
 #import "GJAFNetWork.h"
 #import "Header.h"
+#import <AFNetworking/AFNetworking.h>
+//#import <CommonCrypto/CommonDigest.h>
 @implementation GJAFNetWork
 +(void)GET:(NSString *)url params:(NSDictionary *)params
    success:(GJResponseSuccess)success fail:(GJResponseFail)fail{
@@ -55,6 +57,8 @@
     [manager.requestSerializer setValue:@"10" forHTTPHeaderField:@"clientType"];
     [manager.requestSerializer setValue:@"2" forHTTPHeaderField:@"versiontype"];
     [manager.requestSerializer setValue:@"20" forHTTPHeaderField:@"deviceName"];
+    [manager.requestSerializer setValue:@"20" forHTTPHeaderField:@"domainId"];
+
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json",@"text/json", @"text/plain", @"text/html", nil];
     
     //有sessionId就传
@@ -63,9 +67,7 @@
         NSLog(@"%@", [[NSUserDefaults standardUserDefaults]objectForKey:@"GJ_sessionId"]);
     }
     NSString *identifier = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-    [manager.requestSerializer setValue:identifier forHTTPHeaderField:@"deviceNo"];
-//    NSLog(@"%@", manager.requestSerializer.HTTPRequestHeaders);
-   
+    [manager.requestSerializer setValue:identifier forHTTPHeaderField:@"deviceNo"];   
     
     NSString *inputString = [self dictionaryToJson:params];
     NSString *signString = [inputString stringByAppendingString:@"md5_key"];
@@ -190,8 +192,12 @@
     
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     AFHTTPSessionManager *manager =nil;
-    
-    NSURL *url = [NSURL URLWithString:baseURL];
+    NSURL *url;
+
+    if (baseURL) {
+        url = [NSURL URLWithString:baseURL];
+    }
+//    NSURL *url = [NSURL URLWithString:baseURL];
     
     if (isconfiguration) {
         

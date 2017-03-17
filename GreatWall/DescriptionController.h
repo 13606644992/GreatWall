@@ -11,4 +11,7 @@
 
 @interface DescriptionController : UIViewController
 
+@property (nonatomic ,strong) NSString *productId;
+
+
 @end

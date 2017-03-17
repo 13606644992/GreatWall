@@ -43,6 +43,15 @@
 //虚线
 #import "ImaginaryLine.h"
 #import "OnlyLine.h"
+#import "AllLine.h"
+
+#import "GJAFNetWork.h"//
+
+#import <WebKit/WebKit.h>//
+
+#import "LYPickerView.h"
+
+#import "LGLDatePickerView.h"
 
 
 #pragma mark ----Anything---------------
@@ -64,6 +73,9 @@
 #define WEIGHT       [[UIScreen mainScreen] bounds].size.width/375
 #define WIDTH [UIScreen mainScreen].bounds.size.width / 375
 
+
+#define GJ_Mobile         [[NSUserDefaults standardUserDefaults] objectForKey:@"GJ_mobile"]
+
 //加载等待
 #define SVProgressWait       [SVProgressHUD showWithStatus:@"加载中，请稍后。。。"]
 //加载结束
@@ -78,10 +90,17 @@
 //#define PlaceImage           [UIImage imageNamed:@"186152612"]
 #define PlaceImage           [UIImage imageNamed:@"01.jpg"]
 
+#define USER_TYPELevel             @"20"
+
+#define IS_Bclient [[NSUserDefaults standardUserDefaults] objectForKey:@"GJ_isBClient"]
+
+#define GJ_UserID  [[NSUserDefaults standardUserDefaults] objectForKey:@"GJ_userId"]
 
 
+#import <CommonCrypto/CommonDigest.h>
 
-
+//#define URL @"http://192.168.32.210:18080/seaway-ebao-api-server/api.do"
+#define URL_ALIANG @"http://192.168.32.95:8080/api/api.do"
 
 
 #pragma mark   -----------------LYColor------------------

@@ -1,0 +1,20 @@
+//
+//  CarMsgController.h
+//  GreatWall
+//
+//  Created by 李阳 on 2017/3/1.
+//  Copyright © 2017年 GJ. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+@interface CarMsgController : UIViewController
+/*
+ *  车险公司代码
+ */
+@property (nonatomic ,strong) NSString *insurerId;
+/*
+ *  报价流水号
+ */
+@property (nonatomic ,strong) NSString *serialId;
+@end

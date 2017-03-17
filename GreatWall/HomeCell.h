@@ -12,7 +12,7 @@
 
 @interface HomeCell : UITableViewCell
 
-@property (nonatomic, strong) HomeCellModel *model;
+@property (nonatomic, strong) HomeProduct *model;
 @property (nonatomic ,strong) OnlyLine *lineView;
 @property (nonatomic, strong) UIImageView *titleImg;
 @property (nonatomic, strong) UIImageView *fanImg;

@@ -9,5 +9,6 @@
 #import "RootViewController.h"
 
 @interface Address : RootViewController<UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource>
+@property (nonatomic ,strong) NSString *index;
 
 @end

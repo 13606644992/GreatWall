@@ -10,4 +10,6 @@
 
 @interface MallTabBarViewController : MMTabBarViewController
 
+@property (nonatomic ,strong) NSString *itemSelect;
+
 @end

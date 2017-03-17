@@ -45,6 +45,9 @@ typedef enum {
 @property (nonatomic, assign)int currentIndext;
 @property (nonatomic, assign,readonly)int showIndext;
 
+//定时器时间 默认5
+@property (nonatomic, assign)NSInteger timerTime;
+
 /**
  * 是否自动轮播
  */

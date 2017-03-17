@@ -10,4 +10,6 @@
 
 @interface CarMallViewController : UIViewController
 
+@property (nonatomic ,strong) NSString *indexSelectVC;
+
 @end

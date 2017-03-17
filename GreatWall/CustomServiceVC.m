@@ -213,7 +213,7 @@
     return 49*HEIGHT;
 }
 - (void)btnAction:(UIButton *)sender{
-    NSLog(@"%ld", sender.tag);
+    NSLog(@"%ld", (long)sender.tag);
     if (sender.tag == 1002) {
         NSMutableString* str=[[NSMutableString alloc] initWithFormat:@"telprompt://%@",@"18686570371"];
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];

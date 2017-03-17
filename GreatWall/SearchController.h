@@ -8,6 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+
 @interface SearchController : UIViewController
+
+typedef NS_ENUM(NSInteger, ProductTypeMode) {
+    ProductTypeModeDefailt,           // 默认样式
+    ProductTypeModeProducts,     // 产品样式
+};
+
+
+
 
 @end

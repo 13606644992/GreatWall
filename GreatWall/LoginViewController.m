@@ -19,14 +19,16 @@
 @implementation LoginViewController
 
 - (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:YES];
     self.navigationController.navigationBarHidden = YES;//隐藏导航栏
     StatusBarBlack;
 }
 - (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:YES];
     if (self.loginView) {
         if (self.loginView.currentcountDown != 10 || self.loginView.currentcountDown != 0) {
             [self.loginView.myTimer invalidate];
-            self.loginView.myTimer = nil;
+//            self.loginView.myTimer = nil;
             [self.loginView.codeBtn setTitle:@"获取验证码" forState:UIControlStateNormal];
             self.loginView.currentcountDown = 60;
         }

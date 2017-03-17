@@ -14,11 +14,12 @@
 @interface MallCell : UITableViewCell
 
 
-@property (nonatomic, strong) MallModel *model;
+@property (nonatomic, strong) MallProduct *model;
+@property (nonatomic ,strong) AllLine *lineView;
 @property (nonatomic, strong) UIImageView *titleImg;
 @property (nonatomic, strong) UILabel *titleLab;
-@property (nonatomic, strong) UIImageView *hotImage;
-@property (nonatomic, strong) UIView *borderView;
+@property (nonatomic, strong) UILabel *hotLab;
+@property (nonatomic, strong) UILabel *actionLab;
 @property (nonatomic, strong) UILabel *brandLab;
 @property (nonatomic, strong) UILabel *ageLab;
 @property (nonatomic, strong) UILabel *secLab;

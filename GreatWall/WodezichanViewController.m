@@ -22,7 +22,8 @@
     UIView *footView;
 }
 - (void)viewWillAppear:(BOOL)animated{
-    [super viewWillDisappear:animated];
+    
+    [super viewWillAppear:YES];
     [self.navigationController setNavigationBarHidden:NO animated:NO];
     self.navigationController.navigationBar.barTintColor = LYColor_A1;
     self.navigationController.navigationBar.translucent = NO;

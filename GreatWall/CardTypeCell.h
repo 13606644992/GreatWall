@@ -7,7 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Header.h"
 
 @interface CardTypeCell : UITableViewCell
+@property (nonatomic ,strong) UILabel *titleLab;
+@property (nonatomic ,strong) UILabel *detailLab;
+@property (nonatomic ,strong) UIButton *typeButton;
 
++ (instancetype)cellWithTableView:(UITableView *)tableView;
 @end

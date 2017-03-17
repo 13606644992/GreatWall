@@ -19,3 +19,5 @@
 @property (nonatomic, copy)NSString *sts;
 @property (nonatomic, copy)NSString *zipCode;
 @end
+
+

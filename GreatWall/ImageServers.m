@@ -8,7 +8,7 @@
 
 #import "ImageServers.h"
 #import "Header.h"
-#import <AFNetworking.h>
+//#import <AFNetworking.h>
 #import <AliyunOSSiOS/OSSService.h>
 @implementation ImageServers
 {

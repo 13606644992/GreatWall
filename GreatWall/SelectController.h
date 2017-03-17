@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+
 @interface SelectController : UIViewController
+
+
+@property (nonatomic ,strong)NSString *selectItem;
 
 @end

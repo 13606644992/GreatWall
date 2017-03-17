@@ -54,7 +54,7 @@
     [self.contentView addSubview:self.amountLab];
     [self.amountLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.titleImg.mas_right).with.offset(27*WIDTH);
-        make.top.mas_equalTo(self.desLab.mas_bottom).with.offset(13*HEIGHT);
+        make.top.mas_equalTo(self.desLab.mas_bottom).with.offset(11*HEIGHT);
         make.width.equalTo(@(60*WEIGHT));
         make.height.equalTo(@(16*HEIGHT));
     }];
@@ -76,45 +76,50 @@
     [self.contentView addSubview:self.fanImg];
     [self.fanImg mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.contentView).with.offset(-13*WEIGHT);
-        make.top.mas_equalTo(self.desLab.mas_bottom).with.offset(13*HEIGHT);
+        make.top.mas_equalTo(self.desLab.mas_bottom).with.offset(11*HEIGHT);
         make.height.equalTo(@(16*HEIGHT));
-        make.width.equalTo(@(80*WEIGHT));
+        make.width.equalTo(@(96*WEIGHT));
     }];
 //    返现金额比例
     [self.contentView addSubview:self.fanLab];
     [self.fanLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.fanImg);
-        make.size.mas_equalTo(CGSizeMake(60*WEIGHT, 11*HEIGHT));
+        make.size.mas_equalTo(CGSizeMake(80*WEIGHT, 11*HEIGHT));
     }];
+ 
 }
-//虚线是否隐藏
--(void)setIndexPathRow:(NSInteger)indexPathRow
-{
-    if (indexPathRow == 2) {
-        self.lineView.hidden = YES;
-    }else{
-        self.lineView.hidden = NO;
-    }
-}
+
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
 }
 //属性赋值以及约束条件更新
--(void)setModel:(HomeCellModel *)model
+-(void)setModel:(HomeProduct *)model
 {
-    [self.titleImg sd_setImageWithURL:[NSURL URLWithString:@""] placeholderImage:[UIImage imageNamed:@"01.jpg"]];
-    CGRect tempRect = [self.amountLab.text   boundingRectWithSize:CGSizeMake(100*WEIGHT,16*HEIGHT)options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16*HEIGHT]}context:nil];
+    if ([IS_Bclient integerValue] == 1) {
+        self.fanImg.hidden = NO;
+        self.fanLab.hidden = NO;
+    }else{
+        self.fanImg.hidden = YES;
+        self.fanLab.hidden = YES;
+    }
+    [self.titleImg sd_setImageWithURL:[NSURL URLWithString:model.productLogo] placeholderImage:PlaceImage];
+    self.titleLab.text = model.productName;
+    self.amountLab.text = [NSString stringWithFormat:@"%.02f",[model.minPremium floatValue]/100];
+    CGRect tempRect = [self.amountLab.text  boundingRectWithSize:CGSizeMake(100*WEIGHT,16*HEIGHT)options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16*HEIGHT]}context:nil];
     [self.amountLab mas_updateConstraints:^(MASConstraintMaker *make) {
         make.width.equalTo(@(tempRect.size.width+5*WEIGHT));
     }];
+    self.desLab.text = model.productIntro;
+    self.fanLab.text = [NSString stringWithFormat:@"推广费最高%@%@",model.commisionValue1,@"%"];
     [self layoutIfNeeded];
 }
 #pragma mark  -------Controller
 -(UIImageView *)titleImg
 {
     if (!_titleImg) {
-        _titleImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"01.jpg"]];
+        _titleImg = [[UIImageView alloc] initWithImage:PlaceImage];
+        _titleImg.contentMode = UIViewContentModeScaleAspectFit;
     }
     return _titleImg;
 }
@@ -162,7 +167,7 @@
         _fanLab.font = [UIFont systemFontOfSize:11*WEIGHT];
         _fanLab.textColor = [LYColor colorWithHexString:@"ffffff"];
         _fanLab.textAlignment = NSTextAlignmentCenter;
-        _fanLab.text = @"25%推广费";
+        _fanLab.text = @"推广费最高25%";
     }
     return _fanLab;
 }
@@ -195,7 +200,7 @@
     return _lineView;
 }
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
+    [super setSelected:NO animated:NO];
 
     // Configure the view for the selected state
 }

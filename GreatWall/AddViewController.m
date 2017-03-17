@@ -9,8 +9,12 @@
 #import "AddViewController.h"
 #import "Header.h"
 #import "Address.h"
+#import "AddressSelect.h"
 @interface AddViewController ()
+{
+    NSMutableArray *array;
 
+}
 @end
 
 @implementation AddViewController
@@ -23,6 +27,42 @@
     self.view.backgroundColor = LYColor_A7;
     self.navigationController.navigationBar.translucent = NO;
     [self creatSubview];
+     array = [NSMutableArray arrayWithCapacity:0];
+    
+    NSMutableDictionary *paramer = [NSMutableDictionary dictionaryWithDictionary:@{@"findAllFlag" : @"true"}];
+    [GJAFNetWork POST:URL_ALIANG params:paramer method:@"getAreaList" tpye:@"post" success:^(NSURLSessionDataTask *task, id responseObject) {
+        NSLog(@"%@", responseObject);
+        
+        if ([responseObject[@"respCode"] isEqualToString:@"000000"]) {
+            NSDictionary *output = responseObject[@"output"];
+            NSArray *areasList = output[@"areasList"];
+            
+            [areasList enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                AreaModel *model = [[AreaModel alloc] init];
+                [model setValuesForKeysWithDictionary:obj];
+                __block NSMutableArray *childs = [NSMutableArray arrayWithCapacity:0];
+                [model.children enumerateObjectsUsingBlock:^(id  _Nonnull obj1, NSUInteger idx, BOOL * _Nonnull stop) {
+                    AreaModel *model1 = [[AreaModel alloc] init];
+                    [model1 setValuesForKeysWithDictionary:obj1];
+                    __block NSMutableArray *array2 = [NSMutableArray arrayWithCapacity:0];
+                    [model1.children enumerateObjectsUsingBlock:^(id  _Nonnull obj2, NSUInteger idx, BOOL * _Nonnull stop) {
+                        AreaModel *model2 = [[AreaModel alloc] init];
+                        [model2 setValuesForKeysWithDictionary:obj2];
+                        [array2 addObject:model2];
+                    }];
+                    model1.children = array2;
+                    [childs addObject:model1];
+                }];
+                model.children = childs;
+                [array addObject:model];
+            }];
+            
+        }
+        
+    } fail:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@", error);
+        
+    }];
 }
 -(void)viewWillAppear:(BOOL)animated
 {
@@ -185,12 +225,19 @@
      [self.numTextField resignFirstResponder];
      [self.postalTextField resignFirstResponder];
      [self.addressTextField resignFirstResponder];
-    NSLog(@"选择地址");
-    Address *address = [[Address alloc]init];
-    self.definesPresentationContext = YES; //self is presenting view controller
-    address.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:.4];
-    address.modalPresentationStyle = UIModalPresentationOverFullScreen;
-    [self presentViewController:address animated:YES completion:nil];
+//    NSLog(@"选择地址");
+//    Address *address = [[Address alloc]init];
+//    self.definesPresentationContext = YES; //self is presenting view controller
+//    address.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:.4];
+//    address.modalPresentationStyle = UIModalPresentationOverFullScreen;
+//    [self presentViewController:address animated:YES completion:nil];
+    
+    [[AddressSelect shareShareType] AddressSelectShowModeWithArray:array];
+    [[AddressSelect shareShareType] LYShareTypeBackSelectBlock:^(NSString * address,NSString *shi,NSString *qu,NSString *areaId) {
+        NSLog(@"--sheng-%@----shi----%@----qu----%@-----id----%@",address,shi,qu,areaId);
+        
+    }];
+    
     return NO;
 }
 
